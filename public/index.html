@@ -164,14 +164,14 @@
   .pep-cat-header::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border-glass), transparent); }
   .pep-cat-icon { width: 14px; height: 14px; }
 
-  .pep-card { background: rgba(255,255,255,0.025); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1rem 1.1rem; margin-bottom: 0.55rem; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
+  .pep-card { background: rgba(255,255,255,0.025); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.1rem 1.2rem; margin-bottom: 0.7rem; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
   .pep-card:hover { border-color: var(--border-glass-hi); transform: translateY(-1px); }
   .pep-card.expanded { background: rgba(255,255,255,0.04); border-color: var(--accent); }
   .pep-card.expanded::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--accent), var(--accent-2)); }
   .pep-card-head { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; }
   .pep-card-left { flex: 1; min-width: 0; }
-  .pep-name { font-weight: 700; font-size: 1rem; letter-spacing: -0.015em; }
-  .pep-aliases { color: var(--text-mute); font-size: 0.72rem; margin-top: 0.2rem; font-family: 'JetBrains Mono', monospace; }
+  .pep-name { font-weight: 700; font-size: 1.08rem; letter-spacing: -0.02em; line-height: 1.25; }
+  .pep-aliases { color: var(--text-mute); font-size: 0.78rem; margin-top: 0.25rem; font-family: 'Inter', sans-serif; font-weight: 500; letter-spacing: 0.01em; }
   .pep-tag { padding: 0.22rem 0.55rem; border-radius: 6px; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; flex-shrink: 0; }
   .pep-tag.glp1 { background: rgba(244, 114, 182, 0.12); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.25); }
   .pep-tag.gh, .pep-tag.ghrh, .pep-tag.ghrp { background: rgba(129, 140, 248, 0.12); color: #a5b4fc; border: 1px solid rgba(129, 140, 248, 0.25); }
@@ -187,12 +187,13 @@
   .pep-chevron { width: 18px; height: 18px; color: var(--text-mute); transition: transform 0.25s; flex-shrink: 0; }
   .pep-card.expanded .pep-chevron { transform: rotate(180deg); color: var(--accent); }
   .pep-detail { max-height: 0; overflow: hidden; opacity: 0; transition: all 0.35s ease; }
-  .pep-card.expanded .pep-detail { max-height: 1200px; opacity: 1; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-glass); }
-  .pep-rows { display: grid; gap: 0.6rem; }
-  .pep-row { display: grid; grid-template-columns: 100px 1fr; gap: 0.8rem; font-size: 0.83rem; align-items: start; }
-  .pep-row .lbl { color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; padding-top: 2px; }
-  .pep-row .val { color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 500; line-height: 1.5; }
-  .pep-notes { color: var(--text-2); font-size: 0.84rem; line-height: 1.6; margin-top: 0.9rem; padding: 0.85rem 1rem; background: rgba(0,0,0,0.2); border-radius: 12px; border-left: 2px solid var(--accent); }
+  .pep-card.expanded .pep-detail { max-height: 1400px; opacity: 1; margin-top: 1.1rem; padding-top: 1.1rem; border-top: 1px solid var(--border-glass); }
+  .pep-rows { display: grid; gap: 0.85rem; }
+  .pep-row { display: grid; grid-template-columns: 92px 1fr; gap: 1rem; align-items: baseline; }
+  .pep-row .lbl { color: var(--text-dim); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.11em; font-weight: 700; }
+  .pep-row .val { color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.92rem; font-weight: 500; line-height: 1.55; letter-spacing: -0.005em; }
+  .pep-row .val strong { font-weight: 700; color: var(--accent); }
+  .pep-notes { color: var(--text-2); font-size: 0.88rem; line-height: 1.65; margin-top: 1.1rem; padding: 0.95rem 1.05rem; background: rgba(0,0,0,0.22); border-radius: 12px; border-left: 2px solid var(--accent); letter-spacing: -0.003em; }
   .pep-load-btn { width: 100%; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #07090d; border: none; padding: 0.85rem; border-radius: 12px; font-weight: 800; font-size: 0.88rem; cursor: pointer; margin-top: 1rem; font-family: inherit; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
   .pep-load-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(94, 234, 212, 0.3); }
   .pep-load-btn svg { width: 14px; height: 14px; }
@@ -770,7 +771,7 @@
 <div class="tab-content" id="tab-guide">
   <div class="glass">
     <h2><span class="accent-dot"></span> Dosing Guide</h2>
-    <p>Tap any peptide to expand. Tap "Load" to send numbers to calculator.</p>
+    <p>Tap to expand. "Load" sends values to the calculator.</p>
 
     <div class="search-wrap">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
