@@ -364,13 +364,12 @@
         <span>Desired dose</span>
         <div class="unit-toggle">
           <button class="active" data-unit="mg" onclick="setDoseUnit('mg')">mg</button>
-          <button data-unit="mcg" onclick="setDoseUnit('mcg')">mcg</button>
           <button data-unit="iu" onclick="setDoseUnit('iu')">IU</button>
         </div>
       </div>
       <input type="number" class="input" id="doseAmount" value="0.25" step="0.01" min="0" />
       <div class="iu-hint" id="iuHint" style="display:none; margin-top: 0.55rem; padding: 0.6rem 0.85rem; background: rgba(129,140,248,0.08); border: 1px solid rgba(129,140,248,0.2); border-radius: 10px; font-size: 0.75rem; color: var(--text-2); font-family: 'JetBrains Mono', monospace;">
-        Using <span style="color: var(--accent-2); font-weight: 700;">3 IU = 1 mg</span> (standard somatropin/HGH). Adjust on input below if your vial differs.
+        Using <span style="color: var(--accent-2); font-weight: 700;">3 IU = 1 mg</span> (standard somatropin/HGH).
       </div>
     </div>
 
@@ -439,6 +438,278 @@
         <div class="stat-val"><span id="resConc">0.033</span><span class="unit-label">mg/unit</span></div>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-howto">
+  <div class="glass">
+    <h2><span class="accent-dot"></span> What is Reconstitution?</h2>
+    <p>Turning the dry powder into something you can inject.</p>
+    <div style="margin-top: 1rem; font-size: 0.88rem; line-height: 1.65; color: var(--text-2);">
+      Peptides arrive as a <strong style="color: var(--text);">lyophilized (freeze-dried) powder</strong> sealed in a sterile glass vial. They need to be dissolved in liquid before you can draw and inject them. That liquid is <strong style="color: var(--text);">bacteriostatic water</strong> (BAC water) &mdash; sterile water with 0.9% benzyl alcohol that prevents bacterial growth for up to 28 days after opening.
+      <br><br>
+      The math is simple: <strong style="color: var(--accent);">more water = weaker solution = bigger volume per dose</strong>. Less water = stronger = smaller volume. The total peptide stays the same, only the concentration changes.
+    </div>
+  </div>
+
+  <div class="glass">
+    <h2><span class="accent-dot"></span> What You Need</h2>
+    <p>Gather everything before you start.</p>
+    <div class="supplies-grid">
+      <div class="supply">
+        <div class="supply-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6M9 8h6l-1 14H10z"/></svg></div>
+        <div class="supply-content"><div class="name">Peptide vial</div><div class="desc">Sealed, lyophilized</div></div>
+      </div>
+      <div class="supply">
+        <div class="supply-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8M9 2v4l-3 5v9a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-9l-3-5V2"/></svg></div>
+        <div class="supply-content"><div class="name">BAC water</div><div class="desc">30 mL vial, 0.9% benzyl alc.</div></div>
+      </div>
+      <div class="supply">
+        <div class="supply-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3L5 17v4h4L23 7M14 8l4 4"/></svg></div>
+        <div class="supply-content"><div class="name">Mixing syringe</div><div class="desc">3 mL · 21-25g needle</div></div>
+      </div>
+      <div class="supply">
+        <div class="supply-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3L5 17v4h4L23 7M14 8l4 4"/></svg></div>
+        <div class="supply-content"><div class="name">Insulin syringes</div><div class="desc">0.3 or 0.5 mL · U-100</div></div>
+      </div>
+      <div class="supply">
+        <div class="supply-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <div class="supply-content"><div class="name">Alcohol pads</div><div class="desc">70% isopropyl</div></div>
+      </div>
+      <div class="supply">
+        <div class="supply-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18l-2 13H5z"/><path d="M9 6V3h6v3"/></svg></div>
+        <div class="supply-content"><div class="name">Sharps container</div><div class="desc">For used syringes</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass">
+    <h2><span class="accent-dot"></span> Step by Step</h2>
+    <p>The mixing process, in order.</p>
+
+    <div style="margin-top: 1rem;">
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">1</div>
+          <div class="step-title">Plan your dilution</div>
+        </div>
+        <div class="step-body">
+          <p>Decide <strong>how much BAC water</strong> to add. Common ratios: <strong>2 mL or 3 mL per 10 mg vial</strong>. More water = easier to draw small doses but bigger volume per shot. Use the Calculator tab to preview the math before committing.</p>
+        </div>
+        <div class="step-tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>For most GLP-1s and healing peptides, <strong>2 mL in a 10 mg vial</strong> is the sweet spot &mdash; easy math, manageable draws.</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">2</div>
+          <div class="step-title">Sanitize everything</div>
+        </div>
+        <div class="step-body">
+          <p>Wash your hands thoroughly. Wipe the rubber stoppers on <strong>both vials</strong> (peptide + BAC water) with a fresh alcohol pad. Let air dry 10-15 seconds.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">3</div>
+          <div class="step-title">Draw the BAC water</div>
+        </div>
+        <div class="step-body">
+          <p>Using your <strong>3 mL mixing syringe</strong>, pull back the plunger to your target volume (e.g., 2 mL of air). Insert the needle into the BAC water vial through the rubber stopper, push the air in, flip the vial upside down, then draw your exact volume.</p>
+        </div>
+        <div class="step-tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>Pushing air in first prevents a vacuum, making the water flow out smoothly.</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">4</div>
+          <div class="step-title">Inject water into peptide vial</div>
+        </div>
+        <div class="step-body">
+          <p>Insert the needle into the peptide vial. Tilt the vial slightly and let the water <strong>run slowly down the side of the glass</strong> &mdash; not directly onto the powder. Peptides are fragile; blasting water onto powder can denature them.</p>
+        </div>
+        <div class="step-warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Never shake the vial. <strong>Never blast water</strong> directly onto the powder.</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">5</div>
+          <div class="step-title">Dissolve gently</div>
+        </div>
+        <div class="step-body">
+          <p>Set the vial down and let it sit for <strong>1-2 minutes</strong>. Most peptides dissolve on their own. If any powder remains, <strong>swirl gently</strong> by rolling the vial between your palms. The solution should be perfectly clear when fully dissolved.</p>
+        </div>
+        <div class="step-warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>If the solution is cloudy, has visible particles, or won't dissolve &mdash; do not inject. The peptide may be degraded.</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">6</div>
+          <div class="step-title">Label and refrigerate</div>
+        </div>
+        <div class="step-body">
+          <p>Write the <strong>reconstitution date</strong> on the vial with a fine marker. Store in the <strong>fridge (36-46&deg;F / 2-8&deg;C)</strong>. Most peptides stay stable 28-30 days reconstituted &mdash; some shorter, verify per peptide.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-head">
+          <div class="step-num">7</div>
+          <div class="step-title">Draw your dose</div>
+        </div>
+        <div class="step-body">
+          <p>Use the <strong>Calculator tab</strong> to figure out exactly how many units to draw. Wipe the vial stopper with alcohol, draw your dose into an insulin syringe, tap out air bubbles, and inject subcutaneously into fat (belly, thigh, love handles) at a 45-90&deg; angle.</p>
+        </div>
+        <div class="step-tip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>Rotate injection sites to avoid lumps and irritation. Stay at least 1 inch from your belly button.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass">
+    <h2><span class="accent-dot"></span> The Math</h2>
+    <p>How the calculator works.</p>
+
+    <div class="formula-card">
+      <div class="formula-title">Core formula</div>
+      <div class="formula">
+        <span class="var">units</span> <span class="op">=</span> <span class="var">dose</span> <span class="op">&divide;</span> (<span class="var">vial mg</span> <span class="op">&divide;</span> <span class="var">BAC mL</span> <span class="op">&times;</span> <span class="var">mL per unit</span>)
+      </div>
+      <div style="font-size: 0.78rem; color: var(--text-dim); margin-top: 0.8rem; line-height: 1.6;">
+        A standard <strong style="color: var(--text);">1 mL U-100 insulin syringe</strong> has 100 units across its barrel, so each unit = 0.01 mL. The calculator handles the conversion automatically.
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="ex-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Example &mdash; Semaglutide
+      </div>
+      <div class="ex-rows">
+        <div class="ex-row"><span class="l">Vial size</span><span class="r">5 mg</span></div>
+        <div class="ex-row"><span class="l">BAC water</span><span class="r">2 mL</span></div>
+        <div class="ex-row"><span class="l">Concentration</span><span class="r">2.5 mg/mL</span></div>
+        <div class="ex-row"><span class="l">Desired dose</span><span class="r">0.25 mg</span></div>
+        <div class="ex-row"><span class="l">Per insulin unit</span><span class="r">0.025 mg</span></div>
+        <div class="ex-row result"><span class="l">Draw to</span><span class="r">10 units (0.1 mL)</span></div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="ex-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Example &mdash; HGH (Somatropin)
+      </div>
+      <div class="ex-rows">
+        <div class="ex-row"><span class="l">Vial size</span><span class="r">10 mg (30 IU)</span></div>
+        <div class="ex-row"><span class="l">BAC water</span><span class="r">1 mL</span></div>
+        <div class="ex-row"><span class="l">Concentration</span><span class="r">10 mg/mL (30 IU/mL)</span></div>
+        <div class="ex-row"><span class="l">Desired dose</span><span class="r">2 IU (0.67 mg)</span></div>
+        <div class="ex-row result"><span class="l">Draw to</span><span class="r">~7 units (0.067 mL)</span></div>
+      </div>
+    </div>
+
+    <div class="formula-card" style="margin-top: 0.8rem;">
+      <div class="formula-title">Unit conversions</div>
+      <div class="conversion-grid">
+        <div class="conv">
+          <div class="label">HGH</div>
+          <div class="val">1 mg <span class="ar">=</span> 3 IU</div>
+        </div>
+        <div class="conv">
+          <div class="label">Volume</div>
+          <div class="val">1 mL <span class="ar">=</span> 100 units</div>
+        </div>
+        <div class="conv">
+          <div class="label">Per unit</div>
+          <div class="val">1 unit <span class="ar">=</span> 0.01 mL</div>
+        </div>
+        <div class="conv">
+          <div class="label">Insulin syringe</div>
+          <div class="val">U-100 standard</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass">
+    <h2><span class="accent-dot"></span> Safety &amp; Best Practices</h2>
+    <p>Things that actually matter.</p>
+    <ul class="safety-list">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span><strong>Always sanitize</strong> vial stoppers, hands, and injection site with fresh alcohol pads.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span><strong>Use a new syringe</strong> for every injection. Never reuse needles &mdash; they dull fast and carry bacteria.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span><strong>Rotate injection sites</strong>. Hitting the same spot repeatedly causes lipohypertrophy (lumps) and poor absorption.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span><strong>Refrigerate after reconstitution</strong>. Most peptides degrade quickly at room temp. Never freeze reconstituted peptides.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span><strong>Watch for reactions</strong>: small redness/warmth is normal; widespread rash, swelling beyond the site, or breathing difficulty = stop and seek medical care.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span><strong>Start low, go slow</strong>. New peptide = lowest dose first. Wait 2-3 doses before titrating up.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span><strong>Dispose in a sharps container</strong>. Never throw used needles in regular trash. Most pharmacies accept them.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span><strong>Track everything</strong>: date opened, dose, side effects. Helps you spot patterns and adjust.</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="glass">
+    <h2><span class="accent-dot"></span> Common Pitfalls</h2>
+    <p>Mistakes that ruin your peptide or your day.</p>
+    <ul class="safety-list">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <span><strong>Shaking the vial</strong> &mdash; breaks the peptide bonds. Always swirl gently.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <span><strong>Using regular sterile water</strong> instead of BAC &mdash; no preservative means bacterial contamination within hours.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <span><strong>Leaving vials at room temp</strong> for hours during a session &mdash; back in the fridge as soon as you've drawn your dose.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <span><strong>Forgetting to remove air bubbles</strong> from the insulin syringe before injecting &mdash; ruins your dose accuracy.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <span><strong>Mixing too much water</strong> &mdash; if your dose is &lt;3 units on a 1 mL syringe, accuracy suffers. Reconstitute with less water.</span>
+      </li>
+    </ul>
   </div>
 </div>
 
@@ -511,10 +782,8 @@ function setDoseUnit(unit) {
   doseUnit = unit;
   document.querySelectorAll('.unit-toggle button').forEach(b => b.classList.toggle('active', b.dataset.unit === unit));
   document.getElementById('iuHint').style.display = unit === 'iu' ? 'block' : 'none';
-  // Smart default values when switching
   const inp = document.getElementById('doseAmount');
   if (unit === 'mg' && parseFloat(inp.value) > 100) inp.value = '0.25';
-  if (unit === 'mcg' && parseFloat(inp.value) < 10) inp.value = '250';
   if (unit === 'iu' && parseFloat(inp.value) < 0.1) inp.value = '2';
   calculate();
 }
@@ -536,7 +805,6 @@ function calculate() {
 
   let doseMg;
   if (doseUnit === 'mg') doseMg = doseRaw;
-  else if (doseUnit === 'mcg') doseMg = doseRaw / 1000;
   else doseMg = doseRaw / IU_PER_MG; // IU → mg
 
   if (vialMg <= 0 || bacMl <= 0 || doseMg <= 0) {
@@ -615,39 +883,39 @@ const peptides = [
   { name: 'Tirzepatide', aliases: 'Tirz · Mounjaro · Zepbound', cat: 'GLP-1 / Metabolic', tag: 'GLP-1', tagClass: 'glp1', dose: '2.5–15 mg', startDose: '2.5 mg', freq: 'Weekly (subQ)', cycle: '2.5 → 5 → 7.5 → 10 → 12.5 → 15 (every 4 wks)', vialCommon: '10, 15, 30 mg', notes: 'Dual GIP/GLP-1 agonist. Take same day each week. Side effects: nausea, constipation, fatigue — fade after titration phase.', presetMg: 10, presetBac: 2, presetDose: 2500 },
   { name: 'Semaglutide', aliases: 'Sema · Ozempic · Wegovy', cat: 'GLP-1 / Metabolic', tag: 'GLP-1', tagClass: 'glp1', dose: '0.25–2.4 mg', startDose: '0.25 mg', freq: 'Weekly (subQ)', cycle: '0.25 → 0.5 → 1.0 → 1.7 → 2.4 mg (every 4 wks)', vialCommon: '2, 5, 10 mg', notes: 'GLP-1 agonist. Slower titration = less nausea. Most users land at 1-2.4 mg/wk for weight management.', presetMg: 5, presetBac: 2, presetDose: 250 },
   { name: 'Cagrilintide', aliases: 'Cagri', cat: 'GLP-1 / Metabolic', tag: 'Amylin', tagClass: 'amylin', dose: '0.3–2.4 mg', startDose: '0.3 mg', freq: 'Weekly (subQ)', cycle: 'Titrate weekly similar to semaglutide', vialCommon: '5, 10 mg', notes: 'Long-acting amylin analog. Often stacked with semaglutide ("cagrisema") for synergistic weight loss. Slows gastric emptying.', presetMg: 5, presetBac: 2, presetDose: 300 },
-  { name: 'Ipamorelin', aliases: 'Ipa', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '200–300 mcg', freq: '1-3x daily (subQ)', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '5 mg', notes: 'Selective GH releaser with minimal cortisol/prolactin spike. Best on empty stomach: AM, post-workout, before bed. Stack with CJC-1295 for amplified pulse.', presetMg: 5, presetBac: 2, presetDose: 250 },
-  { name: 'CJC-1295 (no DAC)', aliases: 'Mod GRF 1-29', cat: 'Growth Hormone', tag: 'GHRH', tagClass: 'ghrh', dose: '100–200 mcg', freq: '1-3x daily, paired with Ipa', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '2, 5 mg', notes: 'GHRH analog without DAC = short half-life, pulsatile release. Pairs synergistically with Ipamorelin (CJC drives pulse, Ipa amplifies).', presetMg: 2, presetBac: 2, presetDose: 100 },
+  { name: 'Ipamorelin', aliases: 'Ipa', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '0.2–0.3 mg', freq: '1-3x daily (subQ)', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '5 mg', notes: 'Selective GH releaser with minimal cortisol/prolactin spike. Best on empty stomach: AM, post-workout, before bed. Stack with CJC-1295 for amplified pulse.', presetMg: 5, presetBac: 2, presetDose: 250 },
+  { name: 'CJC-1295 (no DAC)', aliases: 'Mod GRF 1-29', cat: 'Growth Hormone', tag: 'GHRH', tagClass: 'ghrh', dose: '0.1–0.2 mg', freq: '1-3x daily, paired with Ipa', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '2, 5 mg', notes: 'GHRH analog without DAC = short half-life, pulsatile release. Pairs synergistically with Ipamorelin (CJC drives pulse, Ipa amplifies).', presetMg: 2, presetBac: 2, presetDose: 100 },
   { name: 'CJC-1295 (with DAC)', aliases: 'CJC-DAC', cat: 'Growth Hormone', tag: 'GHRH', tagClass: 'ghrh', dose: '1-2 mg', freq: 'Weekly (subQ)', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '2, 5 mg', notes: 'DAC = long half-life (~8 days). One weekly injection gives sustained GH elevation, but loses natural pulsatility. Less popular than no-DAC version.', presetMg: 2, presetBac: 2, presetDose: 1000 },
-  { name: 'Sermorelin', aliases: 'GRF 1-29', cat: 'Growth Hormone', tag: 'GHRH', tagClass: 'ghrh', dose: '200–500 mcg', freq: 'Nightly before bed', cycle: '3-6 months continuous', vialCommon: '2, 5 mg', notes: 'GHRH analog. Stimulates natural GH from pituitary. Best at bedtime to mimic natural GH pulse. Gentler than CJC, slower results.', presetMg: 2, presetBac: 2, presetDose: 300 },
+  { name: 'Sermorelin', aliases: 'GRF 1-29', cat: 'Growth Hormone', tag: 'GHRH', tagClass: 'ghrh', dose: '0.2–0.5 mg', freq: 'Nightly before bed', cycle: '3-6 months continuous', vialCommon: '2, 5 mg', notes: 'GHRH analog. Stimulates natural GH from pituitary. Best at bedtime to mimic natural GH pulse. Gentler than CJC, slower results.', presetMg: 2, presetBac: 2, presetDose: 300 },
   { name: 'Tesamorelin', aliases: 'Tesa · Egrifta', cat: 'Growth Hormone', tag: 'GHRH', tagClass: 'ghrh', dose: '1-2 mg', freq: 'Daily (subQ)', cycle: '12-26 weeks for visceral fat', vialCommon: '2, 5 mg', notes: 'Stronger GHRH analog, FDA-approved for HIV-related lipodystrophy. Best known for visceral fat reduction. Inject in belly fat. Can raise IGF-1 significantly.', presetMg: 5, presetBac: 2, presetDose: 1000 },
   { name: 'MK-677', aliases: 'Ibutamoren', cat: 'Growth Hormone', tag: 'Oral', tagClass: 'oral', dose: '10–25 mg', freq: 'Once daily (oral)', cycle: '8-16 weeks on, 4 weeks off', vialCommon: 'Capsule / liquid', notes: 'Oral ghrelin mimetic — not injected. Significantly increases appetite, GH, IGF-1. Watch for water retention, insulin resistance with long use. Take at night.', presetMg: 0, presetBac: 0, presetDose: 0 },
-  { name: 'GHRP-2', aliases: '', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '100–300 mcg', freq: '2-3x daily', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '5 mg', notes: 'Strong GH releaser but raises cortisol and prolactin more than Ipamorelin. Increases appetite noticeably.', presetMg: 5, presetBac: 2, presetDose: 200 },
-  { name: 'GHRP-6', aliases: '', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '100–300 mcg', freq: '2-3x daily', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '5 mg', notes: 'Older GHRP. Strongest appetite stimulation of the GHRPs (intense hunger ~30min post-inject). Cortisol/prolactin elevation.', presetMg: 5, presetBac: 2, presetDose: 200 },
-  { name: 'Hexarelin', aliases: 'Hex', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '100–200 mcg', freq: '1-2x daily', cycle: '4-6 weeks max — desensitization', vialCommon: '2, 5 mg', notes: 'Most potent GHRP per mg but heavy desensitization. Short cycles only. May offer cardiac benefits in research.', presetMg: 2, presetBac: 2, presetDose: 150 },
-  { name: 'BPC-157', aliases: 'Body Protection Compound', cat: 'Healing / Recovery', tag: 'Heal', tagClass: 'heal', dose: '250–500 mcg', freq: '1-2x daily (subQ or IM near injury)', cycle: '4-8 weeks; longer for chronic', vialCommon: '5, 10 mg', notes: 'Most popular healing peptide. Inject near injury site for tendon/joint, anywhere for gut. Pairs well with TB-500. Well-tolerated.', presetMg: 5, presetBac: 2, presetDose: 250 },
+  { name: 'GHRP-2', aliases: '', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '0.1–0.3 mg', freq: '2-3x daily', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '5 mg', notes: 'Strong GH releaser but raises cortisol and prolactin more than Ipamorelin. Increases appetite noticeably.', presetMg: 5, presetBac: 2, presetDose: 200 },
+  { name: 'GHRP-6', aliases: '', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '0.1–0.3 mg', freq: '2-3x daily', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '5 mg', notes: 'Older GHRP. Strongest appetite stimulation of the GHRPs (intense hunger ~30min post-inject). Cortisol/prolactin elevation.', presetMg: 5, presetBac: 2, presetDose: 200 },
+  { name: 'Hexarelin', aliases: 'Hex', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '0.1–0.2 mg', freq: '1-2x daily', cycle: '4-6 weeks max — desensitization', vialCommon: '2, 5 mg', notes: 'Most potent GHRP per mg but heavy desensitization. Short cycles only. May offer cardiac benefits in research.', presetMg: 2, presetBac: 2, presetDose: 150 },
+  { name: 'BPC-157', aliases: 'Body Protection Compound', cat: 'Healing / Recovery', tag: 'Heal', tagClass: 'heal', dose: '0.25–0.5 mg', freq: '1-2x daily (subQ or IM near injury)', cycle: '4-8 weeks; longer for chronic', vialCommon: '5, 10 mg', notes: 'Most popular healing peptide. Inject near injury site for tendon/joint, anywhere for gut. Pairs well with TB-500. Well-tolerated.', presetMg: 5, presetBac: 2, presetDose: 250 },
   { name: 'TB-500', aliases: 'Thymosin Beta-4 fragment', cat: 'Healing / Recovery', tag: 'Heal', tagClass: 'heal', dose: '2–10 mg/week', freq: '2-2.5 mg 2-3x/week, or front-loaded', cycle: '4-6 wk loading, then maintenance', vialCommon: '2, 5, 10 mg', notes: 'Systemic healing — soft tissue, hair, cardiac. Common loading: 5 mg 2x/week for 4 weeks, then 2-5 mg/week maintenance. Pairs with BPC-157 ("Wolverine").', presetMg: 5, presetBac: 2, presetDose: 2500 },
   { name: 'GHK-Cu', aliases: 'Copper Peptide', cat: 'Healing / Recovery', tag: 'Heal', tagClass: 'heal', dose: '1-3 mg subQ; topical also common', freq: 'Daily or EOD', cycle: '4-12 weeks', vialCommon: '50, 100 mg', notes: 'Skin/hair/wound healing. Subcutaneous for systemic effects. Topical (cream/serum) for localized skin or scalp. Avoid injection sites with active acne.', presetMg: 50, presetBac: 5, presetDose: 2000 },
   { name: 'Wolverine Blend', aliases: 'BPC-157 + TB-500', cat: 'Healing / Recovery', tag: 'Blend', tagClass: 'blend', dose: 'Per individual peptide', freq: 'Once daily combined injection', cycle: '4-8 weeks', vialCommon: 'Often 5 mg + 5 mg pre-blended', notes: 'Synergistic healing stack. Sometimes adds GHK-Cu. Dose each component at its individual range. Faster results than either alone.', presetMg: 10, presetBac: 3, presetDose: 500 },
-  { name: 'KPV', aliases: 'Lys-Pro-Val', cat: 'Healing / Recovery', tag: 'Heal', tagClass: 'heal', dose: '200–500 mcg', freq: 'Daily', cycle: '4-8 weeks', vialCommon: '5 mg', notes: 'Alpha-MSH fragment. Anti-inflammatory, gut healing, skin conditions. Can be taken orally (poor bioavailability) or injected.', presetMg: 5, presetBac: 2, presetDose: 300 },
+  { name: 'KPV', aliases: 'Lys-Pro-Val', cat: 'Healing / Recovery', tag: 'Heal', tagClass: 'heal', dose: '0.2–0.5 mg', freq: 'Daily', cycle: '4-8 weeks', vialCommon: '5 mg', notes: 'Alpha-MSH fragment. Anti-inflammatory, gut healing, skin conditions. Can be taken orally (poor bioavailability) or injected.', presetMg: 5, presetBac: 2, presetDose: 300 },
   { name: 'Thymosin Alpha-1', aliases: 'TA-1 · Zadaxin', cat: 'Healing / Recovery', tag: 'Immune', tagClass: 'immune', dose: '1.6 mg', freq: '2x weekly (subQ)', cycle: '4-12 weeks', vialCommon: '5, 10 mg', notes: 'Immune modulator. Used for chronic infections, immune dysfunction, post-illness recovery. Different from TB-500 (TB-4).', presetMg: 5, presetBac: 2, presetDose: 1600 },
-  { name: 'LL-37', aliases: 'Cathelicidin', cat: 'Healing / Recovery', tag: 'Immune', tagClass: 'immune', dose: '100–500 mcg', freq: 'Daily', cycle: '2-4 weeks max', vialCommon: '5 mg', notes: 'Antimicrobial peptide. Used for biofilm/chronic infections. Can cause significant injection site reactions (redness, swelling) — normal but uncomfortable.', presetMg: 5, presetBac: 2, presetDose: 200 },
-  { name: 'Melanotan I', aliases: 'MT-1 · Afamelanotide', cat: 'Tanning / Melanocortin', tag: 'MC1R', tagClass: 'mc1r', dose: '500 mcg – 1 mg', freq: 'Daily loading, then 2x/week', cycle: 'Loading ~2-4 wks, then maintenance', vialCommon: '10 mg', notes: 'More selective than MT-2 — less nausea, less sexual side effects, less darkening of moles. Slower tan onset but cleaner profile.', presetMg: 10, presetBac: 3, presetDose: 500 },
-  { name: 'Melanotan II', aliases: 'MT-2', cat: 'Tanning / Melanocortin', tag: 'MC1R', tagClass: 'mc1r', dose: '250–500 mcg', freq: 'Daily loading, then 2-3x/week', cycle: 'Loading ~2-3 wks (start low!), maintenance', vialCommon: '10 mg', notes: 'START LOW (100-250 mcg first dose) — nausea is common. UV exposure still required to tan. Side effects: darkening of moles/freckles, spontaneous erections, decreased appetite. Less selective than MT-1.', presetMg: 10, presetBac: 3, presetDose: 250 },
+  { name: 'LL-37', aliases: 'Cathelicidin', cat: 'Healing / Recovery', tag: 'Immune', tagClass: 'immune', dose: '0.1–0.5 mg', freq: 'Daily', cycle: '2-4 weeks max', vialCommon: '5 mg', notes: 'Antimicrobial peptide. Used for biofilm/chronic infections. Can cause significant injection site reactions (redness, swelling) — normal but uncomfortable.', presetMg: 5, presetBac: 2, presetDose: 200 },
+  { name: 'Melanotan I', aliases: 'MT-1 · Afamelanotide', cat: 'Tanning / Melanocortin', tag: 'MC1R', tagClass: 'mc1r', dose: '0.5 mg – 1 mg', freq: 'Daily loading, then 2x/week', cycle: 'Loading ~2-4 wks, then maintenance', vialCommon: '10 mg', notes: 'More selective than MT-2 — less nausea, less sexual side effects, less darkening of moles. Slower tan onset but cleaner profile.', presetMg: 10, presetBac: 3, presetDose: 500 },
+  { name: 'Melanotan II', aliases: 'MT-2', cat: 'Tanning / Melanocortin', tag: 'MC1R', tagClass: 'mc1r', dose: '0.25–0.5 mg', freq: 'Daily loading, then 2-3x/week', cycle: 'Loading ~2-3 wks (start low!), maintenance', vialCommon: '10 mg', notes: 'START LOW (0.1-0.25 mg first dose) — nausea is common. UV exposure still required to tan. Side effects: darkening of moles/freckles, spontaneous erections, decreased appetite. Less selective than MT-1.', presetMg: 10, presetBac: 3, presetDose: 250 },
   { name: 'PT-141', aliases: 'Bremelanotide', cat: 'Tanning / Melanocortin', tag: 'Libido', tagClass: 'libido', dose: '0.5–2 mg', freq: 'As needed, 45-min before activity', cycle: 'Not for daily use', vialCommon: '10 mg', notes: 'For libido/arousal — works on brain (MC4R), not hormones. Side effects: nausea, flushing, transient BP increase. Avoid with cardiovascular conditions. Start at 0.5 mg.', presetMg: 10, presetBac: 3, presetDose: 1000 },
   { name: 'MOTS-c', aliases: '', cat: 'Mitochondrial / Longevity', tag: 'Mito', tagClass: 'mito', dose: '5–10 mg', freq: '2-3x/week (subQ)', cycle: '4-8 weeks', vialCommon: '10 mg', notes: 'Mitochondrial-derived peptide. Metabolic/insulin sensitivity, exercise mimetic effects. Some users report improved endurance and recovery.', presetMg: 10, presetBac: 2, presetDose: 5000 },
   { name: 'SS-31', aliases: 'Elamipretide', cat: 'Mitochondrial / Longevity', tag: 'Mito', tagClass: 'mito', dose: '1-5 mg', freq: 'Daily', cycle: '4-8 weeks', vialCommon: '50 mg', notes: 'Targets mitochondrial inner membrane (cardiolipin). Studied for heart failure, mito dysfunction. Pricey.', presetMg: 50, presetBac: 5, presetDose: 3000 },
   { name: 'Epitalon', aliases: 'Epithalon', cat: 'Mitochondrial / Longevity', tag: 'Longevity', tagClass: 'longevity', dose: '5–10 mg', freq: 'Daily for 10-20 days', cycle: '10-20 day course, 2x/year typical', vialCommon: '20, 50 mg', notes: 'Telomerase-related research peptide. Short course protocols common (vs. continuous). Sleep improvement often reported anecdotally.', presetMg: 20, presetBac: 2, presetDose: 5000 },
   { name: '5-Amino-1MQ', aliases: '5A1MQ', cat: 'Mitochondrial / Longevity', tag: 'Oral', tagClass: 'oral', dose: '50–150 mg', freq: 'Daily (oral)', cycle: '8-12 weeks', vialCommon: 'Capsule', notes: 'Oral NNMT inhibitor — not injected. Targets adipocyte metabolism. Take with food.', presetMg: 0, presetBac: 0, presetDose: 0 },
-  { name: 'Selank', aliases: '', cat: 'Cognitive / Neuro', tag: 'Nootropic', tagClass: 'nootropic', dose: '250–500 mcg', freq: '1-3x daily (intranasal or subQ)', cycle: '2-4 weeks', vialCommon: '5 mg', notes: 'Anxiolytic nootropic from Russia. Calming without sedation. Intranasal use very common (faster onset to brain).', presetMg: 5, presetBac: 2, presetDose: 300 },
-  { name: 'Semax', aliases: '', cat: 'Cognitive / Neuro', tag: 'Nootropic', tagClass: 'nootropic', dose: '250–600 mcg', freq: '1-3x daily (intranasal common)', cycle: '2-4 weeks', vialCommon: '5 mg', notes: 'ACTH fragment, nootropic/neuroprotective. Stimulating — take earlier in day. Intranasal preferred.', presetMg: 5, presetBac: 2, presetDose: 300 },
+  { name: 'Selank', aliases: '', cat: 'Cognitive / Neuro', tag: 'Nootropic', tagClass: 'nootropic', dose: '0.25–0.5 mg', freq: '1-3x daily (intranasal or subQ)', cycle: '2-4 weeks', vialCommon: '5 mg', notes: 'Anxiolytic nootropic from Russia. Calming without sedation. Intranasal use very common (faster onset to brain).', presetMg: 5, presetBac: 2, presetDose: 300 },
+  { name: 'Semax', aliases: '', cat: 'Cognitive / Neuro', tag: 'Nootropic', tagClass: 'nootropic', dose: '0.25–0.6 mg', freq: '1-3x daily (intranasal common)', cycle: '2-4 weeks', vialCommon: '5 mg', notes: 'ACTH fragment, nootropic/neuroprotective. Stimulating — take earlier in day. Intranasal preferred.', presetMg: 5, presetBac: 2, presetDose: 300 },
   { name: 'Cerebrolysin', aliases: '', cat: 'Cognitive / Neuro', tag: 'Neuro', tagClass: 'neuro', dose: '5-30 mL (premixed amps)', freq: 'Daily IM injection', cycle: '10-20 day courses', vialCommon: 'Pre-mixed ampoules', notes: 'Neurotrophic peptide mix from pig brain. Comes pre-mixed in ampoules — no reconstitution needed. Used post-stroke, TBI, dementia research.', presetMg: 0, presetBac: 0, presetDose: 0 },
   { name: 'Dihexa', aliases: 'PNB-0408', cat: 'Cognitive / Neuro', tag: 'Nootropic', tagClass: 'nootropic', dose: '8–45 mg', freq: 'Daily (oral)', cycle: '2-4 weeks', vialCommon: 'Oral', notes: 'Potent synaptogenic compound — oral, not injected. Long half-life. Reportedly very strong cognitive effects.', presetMg: 0, presetBac: 0, presetDose: 0 },
-  { name: 'DSIP', aliases: 'Delta Sleep-Inducing Peptide', cat: 'Sleep', tag: 'Sleep', tagClass: 'sleep', dose: '100–300 mcg', freq: 'Before bed', cycle: 'As needed', vialCommon: '5 mg', notes: 'Promotes delta wave (deep) sleep. Mild effects for most users. Some find it more useful as part of a stack.', presetMg: 5, presetBac: 2, presetDose: 200 },
-  { name: 'IGF-1 LR3', aliases: '', cat: 'Anabolic / Performance', tag: 'Anabolic', tagClass: 'anabolic', dose: '20–50 mcg', freq: '1-2x daily', cycle: '4 weeks max — receptor downreg', vialCommon: '1 mg', notes: 'Long-acting IGF-1 variant. Powerful anabolic. Run short cycles. Subcutaneous near target muscle. Hypoglycemia risk — eat after.', presetMg: 1, presetBac: 1, presetDose: 30 },
+  { name: 'DSIP', aliases: 'Delta Sleep-Inducing Peptide', cat: 'Sleep', tag: 'Sleep', tagClass: 'sleep', dose: '0.1–0.3 mg', freq: 'Before bed', cycle: 'As needed', vialCommon: '5 mg', notes: 'Promotes delta wave (deep) sleep. Mild effects for most users. Some find it more useful as part of a stack.', presetMg: 5, presetBac: 2, presetDose: 200 },
+  { name: 'IGF-1 LR3', aliases: '', cat: 'Anabolic / Performance', tag: 'Anabolic', tagClass: 'anabolic', dose: '0.02–0.05 mg', freq: '1-2x daily', cycle: '4 weeks max — receptor downreg', vialCommon: '1 mg', notes: 'Long-acting IGF-1 variant. Powerful anabolic. Run short cycles. Subcutaneous near target muscle. Hypoglycemia risk — eat after.', presetMg: 1, presetBac: 1, presetDose: 30 },
   { name: 'HGH (Somatropin)', aliases: 'rHGH · Genotropin · Norditropin', cat: 'Growth Hormone', tag: 'IU', tagClass: 'gh', dose: '1–4 IU (0.33–1.33 mg)', startDose: '1 IU', freq: 'Daily subQ (split AM/PM common)', cycle: '3-6 months minimum for fat loss/anti-aging', vialCommon: '10 IU (3.33 mg) or 36 IU (12 mg)', notes: 'Actual recombinant human growth hormone. Conversion: 3 IU ≈ 1 mg. Common protocols: 2 IU/day (anti-aging), 3-4 IU/day (fat loss), 4-8 IU/day (bodybuilding). Side effects scale with dose: water retention, carpal tunnel, insulin resistance. Inject in fatty tissue. Use the IU toggle in calculator.', presetMg: 10, presetBac: 1, presetDose: 1000 },
-  { name: 'HGH Frag 176-191', aliases: 'AOD frag', cat: 'Anabolic / Performance', tag: 'Fat', tagClass: 'fat', dose: '250–500 mcg', freq: '2-3x daily (empty stomach)', cycle: '4-12 weeks', vialCommon: '2, 5 mg', notes: 'Fragment of GH targeting fat loss without GH side effects (no IGF-1 spike). Modest effects in practice.', presetMg: 5, presetBac: 2, presetDose: 300 },
-  { name: 'AOD-9604', aliases: '', cat: 'Anabolic / Performance', tag: 'Fat', tagClass: 'fat', dose: '250–500 mcg', freq: '1-2x daily', cycle: '8-12 weeks', vialCommon: '2, 5 mg', notes: 'Modified HGH frag, similar concept. Anecdotal results mixed.', presetMg: 5, presetBac: 2, presetDose: 300 },
-  { name: 'Follistatin (FST-344)', aliases: '', cat: 'Anabolic / Performance', tag: 'Anabolic', tagClass: 'anabolic', dose: '100 mcg', freq: 'Daily', cycle: '10-30 days', vialCommon: '1 mg', notes: 'Myostatin inhibitor. Expensive. Real follistatin is rare in research market — verify source.', presetMg: 1, presetBac: 1, presetDose: 100 },
+  { name: 'HGH Frag 176-191', aliases: 'AOD frag', cat: 'Anabolic / Performance', tag: 'Fat', tagClass: 'fat', dose: '0.25–0.5 mg', freq: '2-3x daily (empty stomach)', cycle: '4-12 weeks', vialCommon: '2, 5 mg', notes: 'Fragment of GH targeting fat loss without GH side effects (no IGF-1 spike). Modest effects in practice.', presetMg: 5, presetBac: 2, presetDose: 300 },
+  { name: 'AOD-9604', aliases: '', cat: 'Anabolic / Performance', tag: 'Fat', tagClass: 'fat', dose: '0.25–0.5 mg', freq: '1-2x daily', cycle: '8-12 weeks', vialCommon: '2, 5 mg', notes: 'Modified HGH frag, similar concept. Anecdotal results mixed.', presetMg: 5, presetBac: 2, presetDose: 300 },
+  { name: 'Follistatin (FST-344)', aliases: '', cat: 'Anabolic / Performance', tag: 'Anabolic', tagClass: 'anabolic', dose: '0.1 mg', freq: 'Daily', cycle: '10-30 days', vialCommon: '1 mg', notes: 'Myostatin inhibitor. Expensive. Real follistatin is rare in research market — verify source.', presetMg: 1, presetBac: 1, presetDose: 100 },
   { name: 'Adipotide', aliases: 'FTPP', cat: 'Anabolic / Performance', tag: 'Fat', tagClass: 'fat', dose: '0.05 mg/kg', freq: 'Daily', cycle: '4 weeks max', vialCommon: '10 mg', notes: 'Targets blood supply to fat cells. Significant kidney toxicity concerns in primate studies. Use with extreme caution.', presetMg: 10, presetBac: 2, presetDose: 4000 }
 ];
 
