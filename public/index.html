@@ -206,6 +206,57 @@
   .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
+  /* How To tab */
+  .supplies-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.55rem; margin-top: 1rem; }
+  .supply { background: rgba(255,255,255,0.025); border: 1px solid var(--border-glass); border-radius: 14px; padding: 0.85rem 0.9rem; display: flex; gap: 0.7rem; align-items: flex-start; transition: all 0.2s; }
+  .supply:hover { border-color: var(--border-glass-hi); transform: translateY(-1px); }
+  .supply-icon { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, rgba(94,234,212,0.15), rgba(129,140,248,0.15)); border: 1px solid var(--border-glass-hi); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .supply-icon svg { width: 16px; height: 16px; color: var(--accent); }
+  .supply-content .name { font-size: 0.82rem; font-weight: 700; line-height: 1.2; }
+  .supply-content .desc { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.2rem; line-height: 1.35; font-family: 'JetBrains Mono', monospace; }
+
+  .step { background: rgba(255,255,255,0.025); backdrop-filter: blur(24px); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1.1rem; margin-bottom: 0.7rem; position: relative; overflow: hidden; }
+  .step::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--accent), var(--accent-2)); opacity: 0.6; }
+  .step-head { display: flex; gap: 0.8rem; align-items: center; margin-bottom: 0.7rem; }
+  .step-num { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #07090d; display: flex; align-items: center; justify-content: center; font-weight: 800; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; flex-shrink: 0; box-shadow: 0 4px 12px rgba(94,234,212,0.25); }
+  .step-title { font-size: 0.98rem; font-weight: 700; letter-spacing: -0.015em; }
+  .step-body { color: var(--text-2); font-size: 0.86rem; line-height: 1.6; }
+  .step-body p { margin-bottom: 0.6rem; }
+  .step-body p:last-child { margin-bottom: 0; }
+  .step-body strong { color: var(--text); font-weight: 700; }
+  .step-tip { margin-top: 0.7rem; padding: 0.65rem 0.85rem; background: rgba(94,234,212,0.06); border: 1px solid rgba(94,234,212,0.2); border-radius: 10px; font-size: 0.78rem; color: var(--accent); display: flex; gap: 0.5rem; align-items: flex-start; line-height: 1.5; }
+  .step-tip svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 2px; }
+  .step-warn { margin-top: 0.7rem; padding: 0.65rem 0.85rem; background: rgba(251, 191, 36, 0.06); border: 1px solid rgba(251, 191, 36, 0.2); border-radius: 10px; font-size: 0.78rem; color: var(--warn); display: flex; gap: 0.5rem; align-items: flex-start; line-height: 1.5; }
+  .step-warn svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 2px; }
+
+  .formula-card { background: linear-gradient(135deg, rgba(94,234,212,0.06), rgba(129,140,248,0.04)); border: 1px solid rgba(94,234,212,0.18); border-radius: 16px; padding: 1.1rem; margin-top: 1rem; }
+  .formula-title { font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 0.7rem; }
+  .formula { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text); background: rgba(0,0,0,0.25); padding: 0.7rem 0.9rem; border-radius: 10px; line-height: 1.7; border: 1px solid var(--border-glass); }
+  .formula .op { color: var(--accent); font-weight: 700; }
+  .formula .var { color: var(--accent-2); }
+
+  .conversion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.8rem; }
+  .conv { background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); border-radius: 10px; padding: 0.6rem 0.8rem; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+  .conv .label { color: var(--text-dim); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 0.25rem; }
+  .conv .val { color: var(--text); font-weight: 700; }
+  .conv .val .ar { color: var(--accent); margin: 0 0.35rem; }
+
+  .example-card { background: rgba(0,0,0,0.2); border: 1px solid var(--border-glass); border-radius: 12px; padding: 0.95rem; margin-top: 0.8rem; }
+  .example-card .ex-label { font-size: 0.65rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+  .example-card .ex-label svg { width: 12px; height: 12px; }
+  .example-card .ex-rows { display: grid; gap: 0.35rem; font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; }
+  .example-card .ex-row { display: flex; justify-content: space-between; gap: 0.5rem; }
+  .example-card .ex-row .l { color: var(--text-dim); }
+  .example-card .ex-row .r { color: var(--text); font-weight: 700; }
+  .example-card .ex-row.result { padding-top: 0.5rem; margin-top: 0.3rem; border-top: 1px solid var(--border-glass); }
+  .example-card .ex-row.result .r { color: var(--accent); font-size: 0.95rem; }
+
+  .safety-list { list-style: none; padding: 0; margin: 0; }
+  .safety-list li { padding: 0.6rem 0; border-bottom: 1px solid var(--border-glass); font-size: 0.83rem; line-height: 1.55; color: var(--text-2); display: flex; gap: 0.6rem; align-items: flex-start; }
+  .safety-list li:last-child { border-bottom: none; }
+  .safety-list li svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+  .safety-list li strong { color: var(--text); font-weight: 700; }
+
   footer { padding: 2rem 1rem 1rem; max-width: 720px; margin: 1rem auto 0; border-top: 1px solid var(--border-glass); font-size: 0.7rem; color: var(--text-mute); text-align: center; line-height: 1.6; }
 
   /* Toast */
@@ -264,11 +315,17 @@
     </svg>
     Calculator
   </button>
+  <button class="tab" data-tab="howto">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    How To
+  </button>
   <button class="tab" data-tab="guide">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
     </svg>
-    Dosing Guide
+    Dosing
   </button>
 </div>
 
