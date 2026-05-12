@@ -360,17 +360,8 @@
     </div>
 
     <div class="field">
-      <div class="field-label">
-        <span>Desired dose</span>
-        <div class="unit-toggle">
-          <button class="active" data-unit="mg" onclick="setDoseUnit('mg')">mg</button>
-          <button data-unit="iu" onclick="setDoseUnit('iu')">IU</button>
-        </div>
-      </div>
-      <input type="number" class="input" id="doseAmount" value="0.25" step="0.01" min="0" />
-      <div class="iu-hint" id="iuHint" style="display:none; margin-top: 0.55rem; padding: 0.6rem 0.85rem; background: rgba(129,140,248,0.08); border: 1px solid rgba(129,140,248,0.2); border-radius: 10px; font-size: 0.75rem; color: var(--text-2); font-family: 'JetBrains Mono', monospace;">
-        Using <span style="color: var(--accent-2); font-weight: 700;">3 IU = 1 mg</span> (standard somatropin/HGH).
-      </div>
+      <div class="field-label"><span>Desired dose</span><span class="hint">mg</span></div>
+      <input type="number" class="input" id="doseAmount" value="0.25" step="0.01" min="0" inputmode="decimal" />
     </div>
 
     <div class="field">
@@ -775,19 +766,6 @@ document.querySelectorAll('.tab').forEach(btn => {
   });
 });
 
-let doseUnit = 'mg';
-const IU_PER_MG = 3; // somatropin standard
-
-function setDoseUnit(unit) {
-  doseUnit = unit;
-  document.querySelectorAll('.unit-toggle button').forEach(b => b.classList.toggle('active', b.dataset.unit === unit));
-  document.getElementById('iuHint').style.display = unit === 'iu' ? 'block' : 'none';
-  const inp = document.getElementById('doseAmount');
-  if (unit === 'mg' && parseFloat(inp.value) > 100) inp.value = '0.25';
-  if (unit === 'iu' && parseFloat(inp.value) < 0.1) inp.value = '2';
-  calculate();
-}
-
 function fmt(n, dec = 1) {
   if (!isFinite(n) || isNaN(n)) return '—';
   if (n >= 1000) return n.toFixed(0);
@@ -800,12 +778,8 @@ function fmt(n, dec = 1) {
 function calculate() {
   const vialMg = parseFloat(document.getElementById('vialSize').value) || 0;
   const bacMl = parseFloat(document.getElementById('bacWater').value) || 0;
-  const doseRaw = parseFloat(document.getElementById('doseAmount').value) || 0;
+  const doseMg = parseFloat(document.getElementById('doseAmount').value) || 0;
   const syrSize = parseFloat(document.getElementById('syringeSize').value) || 1;
-
-  let doseMg;
-  if (doseUnit === 'mg') doseMg = doseRaw;
-  else doseMg = doseRaw / IU_PER_MG; // IU → mg
 
   if (vialMg <= 0 || bacMl <= 0 || doseMg <= 0) {
     ['bigUnits','resDoses','resVol','resConc','vialPerUnit'].forEach(id => document.getElementById(id).textContent = '—');
@@ -1022,7 +996,6 @@ function renderPeptides(filter = '') {
       // presetDose is stored in mcg, convert to mg for display
       const doseMg = p.presetDose / 1000;
       document.getElementById('doseAmount').value = doseMg < 0.01 ? doseMg.toFixed(4) : (doseMg < 1 ? doseMg.toFixed(3) : doseMg.toFixed(2));
-      setDoseUnit('mg');
       document.querySelectorAll('#vialPresets .chip').forEach(c => c.classList.toggle('active', parseFloat(c.dataset.val) === p.presetMg));
       document.querySelectorAll('#bacPresets .chip').forEach(c => c.classList.toggle('active', parseFloat(c.dataset.val) === p.presetBac));
       calculate();
