@@ -59,8 +59,8 @@
   /* Header */
   header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 0; }
   .brand { display: flex; align-items: center; gap: 0.6rem; }
-  .brand-icon { width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(135deg, #5eead4, #818cf8); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(94, 234, 212, 0.25); }
-  .brand-icon svg { width: 20px; height: 20px; color: #0a1622; }
+  .brand-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 4px 16px rgba(94, 234, 212, 0.3)); }
+  .brand-icon img { width: 100%; height: 100%; object-fit: contain; }
   .brand-name { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em; }
   .brand-name span { background: linear-gradient(135deg, #5eead4, #818cf8); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .lock-btn { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-glass); color: var(--text-dim); padding: 0.5rem 0.9rem; border-radius: 10px; font-size: 0.78rem; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s; }
@@ -225,6 +225,7 @@
 
 <div class="gate" id="gate">
   <div class="gate-inner">
+    <img src="/pepcalc-logo.png" alt="PepCalc" style="width: 100px; height: 100px; margin: 0 auto 1rem; display: block; filter: drop-shadow(0 8px 32px rgba(94, 234, 212, 0.3));" />
     <div class="gate-logo">Pep<span>Calc</span></div>
     <div class="gate-sub">Enter access code</div>
     <input type="password" id="gateInput" maxlength="20" inputmode="numeric" autocomplete="off" />
@@ -237,9 +238,7 @@
 <header>
   <div class="brand">
     <div class="brand-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 2l4 4-12 12-6 2 2-6L18 2z"/>
-      </svg>
+      <img src="/pepcalc-logo.png" alt="PepCalc" />
     </div>
     <div class="brand-name">Pep<span>Calc</span></div>
   </div>
@@ -307,11 +306,15 @@
       <div class="field-label">
         <span>Desired dose</span>
         <div class="unit-toggle">
-          <button class="active" data-unit="mcg" onclick="setDoseUnit('mcg')">mcg</button>
-          <button data-unit="mg" onclick="setDoseUnit('mg')">mg</button>
+          <button class="active" data-unit="mg" onclick="setDoseUnit('mg')">mg</button>
+          <button data-unit="mcg" onclick="setDoseUnit('mcg')">mcg</button>
+          <button data-unit="iu" onclick="setDoseUnit('iu')">IU</button>
         </div>
       </div>
-      <input type="number" class="input" id="doseAmount" value="250" step="1" min="0" />
+      <input type="number" class="input" id="doseAmount" value="0.25" step="0.01" min="0" />
+      <div class="iu-hint" id="iuHint" style="display:none; margin-top: 0.55rem; padding: 0.6rem 0.85rem; background: rgba(129,140,248,0.08); border: 1px solid rgba(129,140,248,0.2); border-radius: 10px; font-size: 0.75rem; color: var(--text-2); font-family: 'JetBrains Mono', monospace;">
+        Using <span style="color: var(--accent-2); font-weight: 700;">3 IU = 1 mg</span> (standard somatropin/HGH). Adjust on input below if your vial differs.
+      </div>
     </div>
 
     <div class="field">
@@ -343,7 +346,7 @@
         </div>
         <div class="vial-info-row">
           <span class="vial-info-label">Per unit</span>
-          <span class="vial-info-val" id="vialPerUnit">33.3 mcg</span>
+          <span class="vial-info-val" id="vialPerUnit">0.033 mg</span>
         </div>
       </div>
     </div>
@@ -376,7 +379,7 @@
       </div>
       <div class="stat" id="statConc">
         <div class="stat-label">Strength</div>
-        <div class="stat-val"><span id="resConc">33.3</span><span class="unit-label">mcg/unit</span></div>
+        <div class="stat-val"><span id="resConc">0.033</span><span class="unit-label">mg/unit</span></div>
       </div>
     </div>
   </div>
@@ -444,10 +447,18 @@ document.querySelectorAll('.tab').forEach(btn => {
   });
 });
 
-let doseUnit = 'mcg';
+let doseUnit = 'mg';
+const IU_PER_MG = 3; // somatropin standard
+
 function setDoseUnit(unit) {
   doseUnit = unit;
   document.querySelectorAll('.unit-toggle button').forEach(b => b.classList.toggle('active', b.dataset.unit === unit));
+  document.getElementById('iuHint').style.display = unit === 'iu' ? 'block' : 'none';
+  // Smart default values when switching
+  const inp = document.getElementById('doseAmount');
+  if (unit === 'mg' && parseFloat(inp.value) > 100) inp.value = '0.25';
+  if (unit === 'mcg' && parseFloat(inp.value) < 10) inp.value = '250';
+  if (unit === 'iu' && parseFloat(inp.value) < 0.1) inp.value = '2';
   calculate();
 }
 
@@ -465,9 +476,13 @@ function calculate() {
   const bacMl = parseFloat(document.getElementById('bacWater').value) || 0;
   const doseRaw = parseFloat(document.getElementById('doseAmount').value) || 0;
   const syrSize = parseFloat(document.getElementById('syringeSize').value) || 1;
-  const doseMcg = doseUnit === 'mg' ? doseRaw * 1000 : doseRaw;
 
-  if (vialMg <= 0 || bacMl <= 0 || doseMcg <= 0) {
+  let doseMg;
+  if (doseUnit === 'mg') doseMg = doseRaw;
+  else if (doseUnit === 'mcg') doseMg = doseRaw / 1000;
+  else doseMg = doseRaw / IU_PER_MG; // IU → mg
+
+  if (vialMg <= 0 || bacMl <= 0 || doseMg <= 0) {
     ['bigUnits','resDoses','resVol','resConc','vialPerUnit'].forEach(id => document.getElementById(id).textContent = '—');
     document.getElementById('vialTotal').textContent = (vialMg || 0) + ' mg';
     document.getElementById('vialConc').textContent = '— mg/mL';
@@ -476,23 +491,21 @@ function calculate() {
     return;
   }
 
-  const totalMcg = vialMg * 1000;
-  const mcgPerMl = totalMcg / bacMl;
   const mgPerMl = vialMg / bacMl;
   const mlPerUnit = syrSize / 100;
-  const mcgPerUnit = mcgPerMl * mlPerUnit;
-  const unitsToDraw = doseMcg / mcgPerUnit;
-  const mlPerDose = doseMcg / mcgPerMl;
-  const dosesPerVial = totalMcg / doseMcg;
+  const mgPerUnit = mgPerMl * mlPerUnit;
+  const unitsToDraw = doseMg / mgPerUnit;
+  const mlPerDose = doseMg / mgPerMl;
+  const dosesPerVial = vialMg / doseMg;
 
   const newVals = {
     bigUnits: fmt(unitsToDraw, 1),
     resDoses: fmt(dosesPerVial, 1),
     resVol: fmt(mlPerDose, 3),
-    resConc: fmt(mcgPerUnit, 2),
+    resConc: fmt(mgPerUnit, 3),
     vialTotal: vialMg + ' mg',
     vialConc: fmt(mgPerMl, 2) + ' mg/mL',
-    vialPerUnit: fmt(mcgPerUnit, 2) + ' mcg'
+    vialPerUnit: fmt(mgPerUnit, 3) + ' mg'
   };
 
   Object.entries(newVals).forEach(([id, val]) => {
@@ -574,6 +587,7 @@ const peptides = [
   { name: 'Dihexa', aliases: 'PNB-0408', cat: 'Cognitive / Neuro', tag: 'Nootropic', tagClass: 'nootropic', dose: '8–45 mg', freq: 'Daily (oral)', cycle: '2-4 weeks', vialCommon: 'Oral', notes: 'Potent synaptogenic compound — oral, not injected. Long half-life. Reportedly very strong cognitive effects.', presetMg: 0, presetBac: 0, presetDose: 0 },
   { name: 'DSIP', aliases: 'Delta Sleep-Inducing Peptide', cat: 'Sleep', tag: 'Sleep', tagClass: 'sleep', dose: '100–300 mcg', freq: 'Before bed', cycle: 'As needed', vialCommon: '5 mg', notes: 'Promotes delta wave (deep) sleep. Mild effects for most users. Some find it more useful as part of a stack.', presetMg: 5, presetBac: 2, presetDose: 200 },
   { name: 'IGF-1 LR3', aliases: '', cat: 'Anabolic / Performance', tag: 'Anabolic', tagClass: 'anabolic', dose: '20–50 mcg', freq: '1-2x daily', cycle: '4 weeks max — receptor downreg', vialCommon: '1 mg', notes: 'Long-acting IGF-1 variant. Powerful anabolic. Run short cycles. Subcutaneous near target muscle. Hypoglycemia risk — eat after.', presetMg: 1, presetBac: 1, presetDose: 30 },
+  { name: 'HGH (Somatropin)', aliases: 'rHGH · Genotropin · Norditropin', cat: 'Growth Hormone', tag: 'IU', tagClass: 'gh', dose: '1–4 IU (0.33–1.33 mg)', startDose: '1 IU', freq: 'Daily subQ (split AM/PM common)', cycle: '3-6 months minimum for fat loss/anti-aging', vialCommon: '10 IU (3.33 mg) or 36 IU (12 mg)', notes: 'Actual recombinant human growth hormone. Conversion: 3 IU ≈ 1 mg. Common protocols: 2 IU/day (anti-aging), 3-4 IU/day (fat loss), 4-8 IU/day (bodybuilding). Side effects scale with dose: water retention, carpal tunnel, insulin resistance. Inject in fatty tissue. Use the IU toggle in calculator.', presetMg: 10, presetBac: 1, presetDose: 1000 },
   { name: 'HGH Frag 176-191', aliases: 'AOD frag', cat: 'Anabolic / Performance', tag: 'Fat', tagClass: 'fat', dose: '250–500 mcg', freq: '2-3x daily (empty stomach)', cycle: '4-12 weeks', vialCommon: '2, 5 mg', notes: 'Fragment of GH targeting fat loss without GH side effects (no IGF-1 spike). Modest effects in practice.', presetMg: 5, presetBac: 2, presetDose: 300 },
   { name: 'AOD-9604', aliases: '', cat: 'Anabolic / Performance', tag: 'Fat', tagClass: 'fat', dose: '250–500 mcg', freq: '1-2x daily', cycle: '8-12 weeks', vialCommon: '2, 5 mg', notes: 'Modified HGH frag, similar concept. Anecdotal results mixed.', presetMg: 5, presetBac: 2, presetDose: 300 },
   { name: 'Follistatin (FST-344)', aliases: '', cat: 'Anabolic / Performance', tag: 'Anabolic', tagClass: 'anabolic', dose: '100 mcg', freq: 'Daily', cycle: '10-30 days', vialCommon: '1 mg', notes: 'Myostatin inhibitor. Expensive. Real follistatin is rare in research market — verify source.', presetMg: 1, presetBac: 1, presetDose: 100 },
@@ -680,8 +694,10 @@ function renderPeptides(filter = '') {
       const p = peptides[idx];
       document.getElementById('vialSize').value = p.presetMg;
       document.getElementById('bacWater').value = p.presetBac;
-      document.getElementById('doseAmount').value = p.presetDose;
-      setDoseUnit('mcg');
+      // presetDose is stored in mcg, convert to mg for display
+      const doseMg = p.presetDose / 1000;
+      document.getElementById('doseAmount').value = doseMg < 0.01 ? doseMg.toFixed(4) : (doseMg < 1 ? doseMg.toFixed(3) : doseMg.toFixed(2));
+      setDoseUnit('mg');
       document.querySelectorAll('#vialPresets .chip').forEach(c => c.classList.toggle('active', parseFloat(c.dataset.val) === p.presetMg));
       document.querySelectorAll('#bacPresets .chip').forEach(c => c.classList.toggle('active', parseFloat(c.dataset.val) === p.presetBac));
       calculate();
