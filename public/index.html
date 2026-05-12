@@ -2,259 +2,426 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover" />
 <meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#07090d" />
 <title>PepCalc</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0e13;
-    --bg-2: #11171f;
-    --bg-3: #1a2230;
-    --card: #151c27;
-    --card-hi: #1d2535;
-    --border: #283242;
-    --text: #e6ecf3;
-    --text-dim: #8b95a7;
-    --text-mute: #5a6577;
+    --bg: #07090d;
+    --border-glass: rgba(255, 255, 255, 0.08);
+    --border-glass-hi: rgba(255, 255, 255, 0.14);
+    --text: #f0f4fa;
+    --text-2: #b8c2d4;
+    --text-dim: #7d8ba3;
+    --text-mute: #4d5870;
     --accent: #5eead4;
-    --accent-glow: rgba(94, 234, 212, 0.15);
+    --accent-2: #818cf8;
     --warn: #fbbf24;
     --danger: #f87171;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
-  body { padding: 1rem; padding-bottom: 4rem; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; overflow-x: hidden; }
+  body { padding: 0 0 6rem; position: relative; }
+
+  /* Animated ambient background */
+  .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.35; animation: drift 24s ease-in-out infinite; }
+  .blob.b1 { width: 500px; height: 500px; background: radial-gradient(circle, #5eead4, transparent 70%); top: -10%; left: -10%; }
+  .blob.b2 { width: 450px; height: 450px; background: radial-gradient(circle, #818cf8, transparent 70%); top: 30%; right: -15%; animation-delay: -8s; animation-duration: 32s; }
+  .blob.b3 { width: 400px; height: 400px; background: radial-gradient(circle, #f472b6, transparent 70%); bottom: -10%; left: 20%; animation-delay: -16s; animation-duration: 28s; opacity: 0.25; }
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(60px, -40px) scale(1.1); }
+    66% { transform: translate(-50px, 50px) scale(0.95); }
+  }
+  .grain { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.025; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
 
   /* Password gate */
   .gate { position: fixed; inset: 0; background: var(--bg); z-index: 100; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 2rem; }
   .gate.hidden { display: none; }
-  .gate-logo { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 0.5rem; }
-  .gate-logo span { color: var(--accent); }
-  .gate-sub { color: var(--text-dim); margin-bottom: 2rem; font-size: 0.9rem; }
-  .gate input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 0.9rem 1.1rem; border-radius: 12px; font-size: 1.1rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.2em; text-align: center; width: 180px; outline: none; transition: border 0.15s; }
-  .gate input:focus { border-color: var(--accent); }
+  .gate-inner { position: relative; z-index: 10; text-align: center; }
+  .gate-logo { font-size: 3rem; font-weight: 900; letter-spacing: -0.05em; margin-bottom: 0.3rem; }
+  .gate-logo span { background: linear-gradient(135deg, #5eead4, #818cf8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .gate-sub { color: var(--text-dim); margin-bottom: 2rem; font-family: 'Instrument Serif', serif; font-style: italic; font-size: 1rem; }
+  .gate input { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-glass-hi); color: var(--text); padding: 1rem 1.2rem; border-radius: 14px; font-size: 1.3rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.4em; text-align: center; width: 220px; outline: none; transition: all 0.2s; }
+  .gate input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.1); }
   .gate-err { color: var(--danger); font-size: 0.85rem; margin-top: 0.75rem; height: 1rem; }
 
+  /* Container */
+  .container { max-width: 720px; margin: 0 auto; padding: 0 1rem; position: relative; z-index: 2; }
+
   /* Header */
-  header { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.25rem 1.5rem; max-width: 720px; margin: 0 auto; }
-  .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; }
-  .logo span { color: var(--accent); }
-  .logout-btn { background: none; border: 1px solid var(--border); color: var(--text-dim); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.75rem; cursor: pointer; font-family: inherit; }
-  .logout-btn:hover { color: var(--text); border-color: var(--text-dim); }
+  header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 0; }
+  .brand { display: flex; align-items: center; gap: 0.6rem; }
+  .brand-icon { width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(135deg, #5eead4, #818cf8); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(94, 234, 212, 0.25); }
+  .brand-icon svg { width: 20px; height: 20px; color: #0a1622; }
+  .brand-name { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em; }
+  .brand-name span { background: linear-gradient(135deg, #5eead4, #818cf8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lock-btn { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-glass); color: var(--text-dim); padding: 0.5rem 0.9rem; border-radius: 10px; font-size: 0.78rem; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s; }
+  .lock-btn:hover { color: var(--text); border-color: var(--border-glass-hi); }
+  .lock-btn svg { width: 12px; height: 12px; }
 
   /* Disclaimer */
-  .disclaimer { max-width: 720px; margin: 0 auto 1.5rem; background: rgba(251, 191, 36, 0.08); border: 1px solid rgba(251, 191, 36, 0.25); padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.78rem; color: var(--warn); line-height: 1.5; }
+  .disclaimer { background: rgba(251, 191, 36, 0.06); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(251, 191, 36, 0.18); padding: 0.8rem 1rem; border-radius: 14px; font-size: 0.76rem; color: var(--warn); line-height: 1.55; margin-bottom: 1.25rem; display: flex; gap: 0.6rem; align-items: flex-start; }
+  .disclaimer svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; }
 
   /* Tabs */
-  .tabs { display: flex; gap: 0.4rem; max-width: 720px; margin: 0 auto 1.25rem; padding: 0.35rem; background: var(--card); border: 1px solid var(--border); border-radius: 14px; }
-  .tab { flex: 1; padding: 0.7rem; background: transparent; border: none; color: var(--text-dim); font-size: 0.9rem; font-weight: 600; border-radius: 10px; cursor: pointer; font-family: inherit; transition: all 0.15s; }
-  .tab.active { background: var(--bg-3); color: var(--text); }
+  .tabs { display: flex; gap: 0.3rem; padding: 0.35rem; background: rgba(255,255,255,0.03); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border-glass); border-radius: 16px; margin-bottom: 1.25rem; }
+  .tab { flex: 1; padding: 0.75rem 0.5rem; background: transparent; border: none; color: var(--text-dim); font-size: 0.88rem; font-weight: 600; border-radius: 12px; cursor: pointer; font-family: inherit; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+  .tab svg { width: 14px; height: 14px; }
+  .tab.active { background: linear-gradient(135deg, rgba(94,234,212,0.15), rgba(129,140,248,0.15)); color: var(--text); border: 1px solid var(--border-glass-hi); }
 
-  /* Cards */
-  .card { max-width: 720px; margin: 0 auto 1rem; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; }
-  .card h2 { font-size: 1.1rem; margin-bottom: 1rem; font-weight: 700; letter-spacing: -0.01em; }
-  .card h3 { font-size: 1rem; margin-bottom: 0.75rem; font-weight: 600; }
+  /* Glass card */
+  .glass { background: rgba(255,255,255,0.025); backdrop-filter: blur(28px) saturate(140%); -webkit-backdrop-filter: blur(28px) saturate(140%); border: 1px solid var(--border-glass); border-radius: 22px; padding: 1.4rem; margin-bottom: 1rem; position: relative; overflow: hidden; }
+  .glass::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); }
+  .glass h2 { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.5rem; }
+  .glass h2 .accent-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+  .glass h2 + p { font-size: 0.95rem; color: var(--text-dim); margin-top: 0.3rem; font-family: 'Instrument Serif', serif; font-style: italic; }
 
-  /* Form controls */
-  .field { margin-bottom: 1rem; }
-  .field label { display: block; font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.4rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
-  .field input, .field select { width: 100%; background: var(--bg-2); border: 1px solid var(--border); color: var(--text); padding: 0.8rem 0.9rem; border-radius: 10px; font-size: 1rem; outline: none; font-family: inherit; transition: border 0.15s; }
-  .field input:focus, .field select:focus { border-color: var(--accent); }
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-  .unit-toggle { display: flex; gap: 0.3rem; margin-bottom: 0.4rem; }
-  .unit-toggle button { flex: 1; background: var(--bg-2); border: 1px solid var(--border); color: var(--text-dim); padding: 0.45rem; border-radius: 8px; font-size: 0.78rem; cursor: pointer; font-family: inherit; font-weight: 600; }
-  .unit-toggle button.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  /* Field */
+  .field { margin-top: 1.1rem; }
+  .field-label { display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: var(--text-dim); margin-bottom: 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+  .field-label .hint { font-family: 'JetBrains Mono', monospace; color: var(--text-mute); text-transform: none; font-weight: 500; letter-spacing: 0; }
+  .input { width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--border-glass); color: var(--text); padding: 0.95rem 1.1rem; border-radius: 14px; font-size: 1.05rem; outline: none; font-family: 'JetBrains Mono', monospace; font-weight: 600; transition: all 0.2s; }
+  .input:focus { border-color: var(--accent); background: rgba(0,0,0,0.35); box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.08); }
+  select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237d8ba3' viewBox='0 0 16 16'%3E%3Cpath d='M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
 
-  /* Quick presets */
-  .presets { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.4rem; }
-  .preset-btn { background: var(--bg-2); border: 1px solid var(--border); color: var(--text-dim); padding: 0.35rem 0.7rem; border-radius: 8px; font-size: 0.75rem; cursor: pointer; font-family: inherit; }
-  .preset-btn:hover, .preset-btn.active { background: var(--bg-3); color: var(--accent); border-color: var(--accent); }
+  /* Unit toggle */
+  .unit-toggle { display: inline-flex; background: rgba(0,0,0,0.25); border: 1px solid var(--border-glass); border-radius: 10px; padding: 3px; gap: 2px; }
+  .unit-toggle button { background: transparent; border: none; color: var(--text-dim); padding: 0.3rem 0.7rem; border-radius: 7px; font-size: 0.72rem; cursor: pointer; font-family: inherit; font-weight: 700; transition: all 0.15s; }
+  .unit-toggle button.active { background: var(--accent); color: #0a1622; }
 
-  /* Results */
-  .results { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-  .result-item { display: flex; justify-content: space-between; align-items: baseline; padding: 0.7rem 0; border-bottom: 1px solid var(--border); }
-  .result-item:last-child { border-bottom: none; }
-  .result-label { font-size: 0.85rem; color: var(--text-dim); }
-  .result-value { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 600; color: var(--text); }
-  .result-value.big { font-size: 1.5rem; color: var(--accent); }
-  .result-value .unit { color: var(--text-mute); font-size: 0.75rem; margin-left: 0.3rem; font-weight: 400; }
+  /* Chips */
+  .chips { display: flex; gap: 0.4rem; margin-top: 0.55rem; overflow-x: auto; padding-bottom: 0.2rem; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { background: rgba(255,255,255,0.04); border: 1px solid var(--border-glass); color: var(--text-dim); padding: 0.35rem 0.8rem; border-radius: 999px; font-size: 0.74rem; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-weight: 600; white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
+  .chip:hover { color: var(--accent); border-color: var(--accent); }
+  .chip.active { background: rgba(94, 234, 212, 0.12); color: var(--accent); border-color: var(--accent); }
 
-  /* Syringe visual */
-  .syringe-vis { margin: 1rem 0; padding: 1.25rem; background: var(--bg-2); border-radius: 12px; border: 1px solid var(--border); }
-  .syringe-vis-label { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
-  .syringe { position: relative; height: 36px; background: var(--bg); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
-  .syringe-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #34d399); transition: width 0.3s ease; box-shadow: 0 0 12px var(--accent-glow); }
-  .syringe-marks { position: absolute; inset: 0; display: flex; justify-content: space-between; pointer-events: none; padding: 0 4px; }
-  .syringe-mark { width: 1px; background: rgba(255,255,255,0.1); }
-  .syringe-scale { display: flex; justify-content: space-between; margin-top: 0.4rem; font-size: 0.65rem; color: var(--text-mute); font-family: 'JetBrains Mono', monospace; }
+  /* Vial visualization */
+  .vial-section { display: grid; grid-template-columns: 100px 1fr; gap: 1.25rem; align-items: center; margin: 1.2rem 0 0.5rem; padding: 1.1rem; background: rgba(0,0,0,0.18); border: 1px solid var(--border-glass); border-radius: 18px; }
+  .vial-3d { position: relative; width: 80px; height: 130px; margin: 0 auto; }
+  .vial-cap { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 36px; height: 16px; background: linear-gradient(180deg, #6b7689, #3d4759); border-radius: 4px 4px 2px 2px; z-index: 3; box-shadow: inset 0 -2px 4px rgba(0,0,0,0.4); }
+  .vial-neck { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 30px; height: 8px; background: linear-gradient(180deg, #8a93a8, #565f73); z-index: 2; }
+  .vial-body { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); width: 64px; height: 100px; background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px 8px 18px 18px; overflow: hidden; backdrop-filter: blur(10px); }
+  .vial-liquid { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(180deg, rgba(94,234,212,0.7), rgba(94,234,212,0.4)); transition: height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 20px rgba(94,234,212,0.4); }
+  .vial-liquid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(180deg, rgba(255,255,255,0.6), transparent); }
+  .vial-shine { position: absolute; top: 18px; left: 24px; width: 8px; height: 80px; background: linear-gradient(180deg, rgba(255,255,255,0.25), transparent); border-radius: 4px; z-index: 4; pointer-events: none; }
+  .vial-info { display: flex; flex-direction: column; gap: 0.5rem; }
+  .vial-info-row { display: flex; justify-content: space-between; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-glass); }
+  .vial-info-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .vial-info-label { font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+  .vial-info-val { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; color: var(--text); }
 
-  /* Peptide guide */
-  .search-box { width: 100%; background: var(--bg-2); border: 1px solid var(--border); color: var(--text); padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.95rem; margin-bottom: 1rem; font-family: inherit; outline: none; }
-  .search-box:focus { border-color: var(--accent); }
+  /* Syringe */
+  .syringe-card { padding: 1.2rem; margin-top: 1.1rem; background: linear-gradient(135deg, rgba(94,234,212,0.06), rgba(129,140,248,0.04)); border: 1px solid rgba(94,234,212,0.18); border-radius: 18px; }
+  .syringe-head { margin-bottom: 1rem; }
+  .syringe-head .lbl { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+  .syringe-head .big-val { font-family: 'JetBrains Mono', monospace; font-size: 2.4rem; font-weight: 800; background: linear-gradient(135deg, #5eead4, #818cf8); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; }
+  .syringe-head .big-val .unit-label { font-size: 0.95rem; color: var(--text-dim); margin-left: 0.3rem; -webkit-background-clip: initial; background-clip: initial; -webkit-text-fill-color: var(--text-dim); }
+  .syringe-vis { position: relative; height: 56px; margin: 0.8rem 0 0.5rem; }
+  .syringe-barrel { position: absolute; left: 0; top: 14px; width: calc(100% - 50px); height: 28px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; overflow: hidden; }
+  .syringe-fill { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, rgba(94,234,212,0.85), rgba(129,140,248,0.85)); transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 18px rgba(94,234,212,0.4); }
+  .syringe-fill::after { content: ''; position: absolute; top: 0; bottom: 0; right: 0; width: 3px; background: rgba(255,255,255,0.6); }
+  .syringe-plunger { position: absolute; right: 0; top: 8px; width: 50px; height: 40px; }
+  .syringe-plunger::before { content: ''; position: absolute; left: 0; top: 6px; width: 40px; height: 28px; background: linear-gradient(135deg, #6b7689, #3d4759); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; }
+  .syringe-plunger::after { content: ''; position: absolute; left: 40px; top: 14px; width: 10px; height: 12px; background: #3d4759; border-radius: 0 4px 4px 0; }
+  .syringe-needle { position: absolute; left: -22px; top: 26px; width: 22px; height: 4px; background: linear-gradient(90deg, transparent, #8a93a8); border-radius: 2px; }
+  .syringe-scale { display: flex; justify-content: space-between; padding-right: 50px; font-size: 0.62rem; font-family: 'JetBrains Mono', monospace; color: var(--text-mute); font-weight: 600; }
 
-  .pep-category { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-mute); margin: 1.25rem 0 0.5rem; padding-left: 0.25rem; }
-  .pep-category:first-child { margin-top: 0; }
-  .pep-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: 0.5rem; cursor: pointer; transition: all 0.15s; }
-  .pep-card:hover { border-color: var(--accent); }
-  .pep-card.expanded { background: var(--card-hi); border-color: var(--accent); }
-  .pep-card-head { display: flex; justify-content: space-between; align-items: center; }
-  .pep-name { font-weight: 700; font-size: 1rem; letter-spacing: -0.01em; }
-  .pep-aliases { color: var(--text-mute); font-size: 0.75rem; margin-top: 0.15rem; }
-  .pep-tag { background: var(--bg-3); color: var(--accent); padding: 0.2rem 0.55rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; }
-  .pep-detail { display: none; margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
-  .pep-card.expanded .pep-detail { display: block; }
-  .pep-row { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.85rem; gap: 1rem; }
-  .pep-row .lbl { color: var(--text-dim); flex-shrink: 0; }
-  .pep-row .val { color: var(--text); text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
-  .pep-notes { color: var(--text-dim); font-size: 0.82rem; line-height: 1.55; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--border); }
-  .pep-use-btn { width: 100%; background: var(--accent); color: var(--bg); border: none; padding: 0.7rem; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; margin-top: 0.8rem; font-family: inherit; }
-  .pep-use-btn:hover { opacity: 0.9; }
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem; margin-top: 1rem; }
+  .stat { background: rgba(255,255,255,0.025); border: 1px solid var(--border-glass); border-radius: 14px; padding: 0.9rem 0.6rem; text-align: center; transition: all 0.3s; }
+  .stat-label { font-size: 0.62rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 0.4rem; }
+  .stat-val { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 800; color: var(--text); line-height: 1.1; }
+  .stat-val .unit-label { font-size: 0.62rem; color: var(--text-dim); font-weight: 500; display: block; margin-top: 0.15rem; }
+  .stat.pulse { animation: statPulse 0.5s ease; }
+  @keyframes statPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); background: rgba(94,234,212,0.08); border-color: var(--accent); }
+    100% { transform: scale(1); }
+  }
 
-  /* Hidden tab content */
+  /* Search */
+  .search-wrap { position: relative; margin-top: 1.1rem; }
+  .search-wrap svg { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-mute); }
+  .search-input { width: 100%; background: rgba(0,0,0,0.25); border: 1px solid var(--border-glass); color: var(--text); padding: 0.85rem 1rem 0.85rem 2.6rem; border-radius: 14px; font-size: 0.95rem; outline: none; font-family: inherit; transition: all 0.2s; }
+  .search-input:focus { border-color: var(--accent); background: rgba(0,0,0,0.35); }
+  .search-input::placeholder { color: var(--text-mute); }
+  .filter-row { display: flex; gap: 0.4rem; margin-top: 0.8rem; overflow-x: auto; padding-bottom: 0.3rem; scrollbar-width: none; }
+  .filter-row::-webkit-scrollbar { display: none; }
+
+  /* Peptide cards */
+  .pep-list { margin-top: 1rem; }
+  .pep-cat-header { display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-mute); margin: 1.4rem 0 0.6rem; padding: 0 0.25rem; font-weight: 700; }
+  .pep-cat-header:first-child { margin-top: 0; }
+  .pep-cat-header::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border-glass), transparent); }
+  .pep-cat-icon { width: 14px; height: 14px; }
+
+  .pep-card { background: rgba(255,255,255,0.025); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border-glass); border-radius: 16px; padding: 1rem 1.1rem; margin-bottom: 0.55rem; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden; }
+  .pep-card:hover { border-color: var(--border-glass-hi); transform: translateY(-1px); }
+  .pep-card.expanded { background: rgba(255,255,255,0.04); border-color: var(--accent); }
+  .pep-card.expanded::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--accent), var(--accent-2)); }
+  .pep-card-head { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; }
+  .pep-card-left { flex: 1; min-width: 0; }
+  .pep-name { font-weight: 700; font-size: 1rem; letter-spacing: -0.015em; }
+  .pep-aliases { color: var(--text-mute); font-size: 0.72rem; margin-top: 0.2rem; font-family: 'JetBrains Mono', monospace; }
+  .pep-tag { padding: 0.22rem 0.55rem; border-radius: 6px; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; flex-shrink: 0; }
+  .pep-tag.glp1 { background: rgba(244, 114, 182, 0.12); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.25); }
+  .pep-tag.gh, .pep-tag.ghrh, .pep-tag.ghrp { background: rgba(129, 140, 248, 0.12); color: #a5b4fc; border: 1px solid rgba(129, 140, 248, 0.25); }
+  .pep-tag.heal { background: rgba(94, 234, 212, 0.12); color: #5eead4; border: 1px solid rgba(94, 234, 212, 0.25); }
+  .pep-tag.mc1r, .pep-tag.libido { background: rgba(251, 191, 36, 0.12); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.25); }
+  .pep-tag.mito, .pep-tag.longevity { background: rgba(167, 243, 208, 0.12); color: #6ee7b7; border: 1px solid rgba(167, 243, 208, 0.25); }
+  .pep-tag.nootropic, .pep-tag.neuro { background: rgba(196, 181, 253, 0.12); color: #c4b5fd; border: 1px solid rgba(196, 181, 253, 0.25); }
+  .pep-tag.sleep { background: rgba(147, 197, 253, 0.12); color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.25); }
+  .pep-tag.anabolic, .pep-tag.fat { background: rgba(248, 113, 113, 0.12); color: #fca5a5; border: 1px solid rgba(248, 113, 113, 0.25); }
+  .pep-tag.oral { background: rgba(125, 211, 252, 0.12); color: #7dd3fc; border: 1px solid rgba(125, 211, 252, 0.25); }
+  .pep-tag.immune, .pep-tag.amylin, .pep-tag.blend { background: rgba(255,255,255,0.06); color: var(--text-2); border: 1px solid var(--border-glass-hi); }
+
+  .pep-chevron { width: 18px; height: 18px; color: var(--text-mute); transition: transform 0.25s; flex-shrink: 0; }
+  .pep-card.expanded .pep-chevron { transform: rotate(180deg); color: var(--accent); }
+  .pep-detail { max-height: 0; overflow: hidden; opacity: 0; transition: all 0.35s ease; }
+  .pep-card.expanded .pep-detail { max-height: 1200px; opacity: 1; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-glass); }
+  .pep-rows { display: grid; gap: 0.6rem; }
+  .pep-row { display: grid; grid-template-columns: 100px 1fr; gap: 0.8rem; font-size: 0.83rem; align-items: start; }
+  .pep-row .lbl { color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; padding-top: 2px; }
+  .pep-row .val { color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 500; line-height: 1.5; }
+  .pep-notes { color: var(--text-2); font-size: 0.84rem; line-height: 1.6; margin-top: 0.9rem; padding: 0.85rem 1rem; background: rgba(0,0,0,0.2); border-radius: 12px; border-left: 2px solid var(--accent); }
+  .pep-load-btn { width: 100%; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #07090d; border: none; padding: 0.85rem; border-radius: 12px; font-weight: 800; font-size: 0.88rem; cursor: pointer; margin-top: 1rem; font-family: inherit; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+  .pep-load-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(94, 234, 212, 0.3); }
+  .pep-load-btn svg { width: 14px; height: 14px; }
+  .pep-load-btn.disabled { background: rgba(255,255,255,0.05); color: var(--text-mute); cursor: not-allowed; }
+  .pep-load-btn.disabled:hover { transform: none; box-shadow: none; }
+
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--text-mute); }
+  .empty svg { width: 48px; height: 48px; margin: 0 auto 0.8rem; opacity: 0.5; }
+
   .tab-content { display: none; }
-  .tab-content.active { display: block; }
+  .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* Footer */
-  footer { max-width: 720px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 0.72rem; color: var(--text-mute); text-align: center; line-height: 1.6; }
+  footer { padding: 2rem 1rem 1rem; max-width: 720px; margin: 1rem auto 0; border-top: 1px solid var(--border-glass); font-size: 0.7rem; color: var(--text-mute); text-align: center; line-height: 1.6; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(20, 26, 38, 0.95); backdrop-filter: blur(20px); border: 1px solid var(--accent); color: var(--accent); padding: 0.8rem 1.3rem; border-radius: 12px; font-weight: 600; font-size: 0.85rem; z-index: 50; opacity: 0; transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem; }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .toast svg { width: 14px; height: 14px; }
 </style>
 </head>
 <body>
 
-<!-- PASSWORD GATE -->
+<div class="ambient">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+</div>
+<div class="grain"></div>
+
 <div class="gate" id="gate">
-  <div class="gate-logo">Pep<span>Calc</span></div>
-  <div class="gate-sub">Enter access code</div>
-  <input type="password" id="gateInput" maxlength="20" inputmode="numeric" autocomplete="off" />
-  <div class="gate-err" id="gateErr"></div>
+  <div class="gate-inner">
+    <div class="gate-logo">Pep<span>Calc</span></div>
+    <div class="gate-sub">Enter access code</div>
+    <input type="password" id="gateInput" maxlength="20" inputmode="numeric" autocomplete="off" />
+    <div class="gate-err" id="gateErr"></div>
+  </div>
 </div>
 
-<!-- MAIN APP -->
+<div class="container">
+
 <header>
-  <div class="logo">Pep<span>Calc</span></div>
-  <button class="logout-btn" onclick="logout()">Lock</button>
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 2l4 4-12 12-6 2 2-6L18 2z"/>
+      </svg>
+    </div>
+    <div class="brand-name">Pep<span>Calc</span></div>
+  </div>
+  <button class="lock-btn" onclick="logout()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+    Lock
+  </button>
 </header>
 
 <div class="disclaimer">
-  For personal reference only. Not medical advice. Dose ranges shown are commonly cited from peptide community sources, not FDA-approved prescribing info. Many of these compounds are research peptides not approved for human use. Verify everything independently and consult a physician.
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+  </svg>
+  <div>Personal reference only — not medical advice. Many compounds listed are research peptides not FDA-approved for human use. Verify independently and consult a physician.</div>
 </div>
 
 <div class="tabs">
-  <button class="tab active" data-tab="calc">Calculator</button>
-  <button class="tab" data-tab="guide">Dosing Guide</button>
+  <button class="tab active" data-tab="calc">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="10" x2="16" y2="10"/><line x1="12" y1="10" x2="12" y2="10"/><line x1="8" y1="10" x2="8" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/>
+    </svg>
+    Calculator
+  </button>
+  <button class="tab" data-tab="guide">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </svg>
+    Dosing Guide
+  </button>
 </div>
 
-<!-- CALCULATOR TAB -->
 <div class="tab-content active" id="tab-calc">
-  <div class="card">
-    <h2>Reconstitution Calculator</h2>
+  <div class="glass">
+    <h2><span class="accent-dot"></span> Reconstitution</h2>
+    <p>Dial in your inputs and watch the math.</p>
 
     <div class="field">
-      <label>Vial size (mg)</label>
-      <input type="number" id="vialSize" value="10" step="0.1" min="0.1" />
-      <div class="presets" id="vialPresets">
-        <button class="preset-btn" data-val="2">2 mg</button>
-        <button class="preset-btn" data-val="5">5 mg</button>
-        <button class="preset-btn" data-val="10">10 mg</button>
-        <button class="preset-btn" data-val="15">15 mg</button>
-        <button class="preset-btn" data-val="20">20 mg</button>
+      <div class="field-label"><span>Vial size</span><span class="hint">mg</span></div>
+      <input type="number" class="input" id="vialSize" value="10" step="0.1" min="0.1" />
+      <div class="chips" id="vialPresets">
+        <button class="chip" data-val="2">2 mg</button>
+        <button class="chip" data-val="5">5 mg</button>
+        <button class="chip active" data-val="10">10 mg</button>
+        <button class="chip" data-val="15">15 mg</button>
+        <button class="chip" data-val="20">20 mg</button>
+        <button class="chip" data-val="30">30 mg</button>
+        <button class="chip" data-val="50">50 mg</button>
       </div>
     </div>
 
     <div class="field">
-      <label>BAC water (mL)</label>
-      <input type="number" id="bacWater" value="3" step="0.1" min="0.1" />
-      <div class="presets" id="bacPresets">
-        <button class="preset-btn" data-val="1">1 mL</button>
-        <button class="preset-btn" data-val="2">2 mL</button>
-        <button class="preset-btn" data-val="3">3 mL</button>
-        <button class="preset-btn" data-val="5">5 mL</button>
+      <div class="field-label"><span>BAC water</span><span class="hint">mL</span></div>
+      <input type="number" class="input" id="bacWater" value="3" step="0.1" min="0.1" />
+      <div class="chips" id="bacPresets">
+        <button class="chip" data-val="1">1 mL</button>
+        <button class="chip" data-val="2">2 mL</button>
+        <button class="chip active" data-val="3">3 mL</button>
+        <button class="chip" data-val="5">5 mL</button>
       </div>
     </div>
 
     <div class="field">
-      <label>Desired dose</label>
-      <div class="unit-toggle">
-        <button class="active" data-unit="mcg" onclick="setDoseUnit('mcg')">mcg</button>
-        <button data-unit="mg" onclick="setDoseUnit('mg')">mg</button>
+      <div class="field-label">
+        <span>Desired dose</span>
+        <div class="unit-toggle">
+          <button class="active" data-unit="mcg" onclick="setDoseUnit('mcg')">mcg</button>
+          <button data-unit="mg" onclick="setDoseUnit('mg')">mg</button>
+        </div>
       </div>
-      <input type="number" id="doseAmount" value="250" step="1" min="0" />
+      <input type="number" class="input" id="doseAmount" value="250" step="1" min="0" />
     </div>
 
     <div class="field">
-      <label>Syringe size</label>
-      <select id="syringeSize">
-        <option value="1">1 mL (100 units) — standard insulin</option>
-        <option value="0.5">0.5 mL (50 units)</option>
-        <option value="0.3">0.3 mL (30 units)</option>
+      <div class="field-label"><span>Syringe</span><span class="hint">U-100</span></div>
+      <select class="input" id="syringeSize">
+        <option value="1">1 mL — 100 units (standard)</option>
+        <option value="0.5">0.5 mL — 50 units</option>
+        <option value="0.3">0.3 mL — 30 units</option>
       </select>
     </div>
 
-    <div class="syringe-vis">
-      <div class="syringe-vis-label">Draw to this line</div>
-      <div class="syringe">
-        <div class="syringe-fill" id="syringeFill" style="width: 0%"></div>
-        <div class="syringe-marks">
-          <div class="syringe-mark"></div><div class="syringe-mark"></div><div class="syringe-mark"></div><div class="syringe-mark"></div><div class="syringe-mark"></div>
-          <div class="syringe-mark"></div><div class="syringe-mark"></div><div class="syringe-mark"></div><div class="syringe-mark"></div><div class="syringe-mark"></div>
+    <div class="vial-section">
+      <div class="vial-3d">
+        <div class="vial-cap"></div>
+        <div class="vial-neck"></div>
+        <div class="vial-body">
+          <div class="vial-liquid" id="vialLiquid" style="height: 60%"></div>
         </div>
+        <div class="vial-shine"></div>
       </div>
-      <div class="syringe-scale">
-        <span>0</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100</span>
+      <div class="vial-info">
+        <div class="vial-info-row">
+          <span class="vial-info-label">Total</span>
+          <span class="vial-info-val" id="vialTotal">10 mg</span>
+        </div>
+        <div class="vial-info-row">
+          <span class="vial-info-label">Strength</span>
+          <span class="vial-info-val" id="vialConc">3.33 mg/mL</span>
+        </div>
+        <div class="vial-info-row">
+          <span class="vial-info-label">Per unit</span>
+          <span class="vial-info-val" id="vialPerUnit">33.3 mcg</span>
+        </div>
       </div>
     </div>
 
-    <div class="results">
-      <div class="result-item">
-        <span class="result-label">Draw to</span>
-        <span class="result-value big" id="resUnits">— <span class="unit">units</span></span>
+    <div class="syringe-card">
+      <div class="syringe-head">
+        <div class="lbl">Draw to</div>
+        <div class="big-val"><span id="bigUnits">7.5</span><span class="unit-label">units</span></div>
       </div>
-      <div class="result-item">
-        <span class="result-label">Concentration</span>
-        <span class="result-value" id="resConc">— <span class="unit">mcg/unit</span></span>
+      <div class="syringe-vis">
+        <div class="syringe-barrel">
+          <div class="syringe-fill" id="syringeFill" style="width: 7.5%"></div>
+        </div>
+        <div class="syringe-needle"></div>
+        <div class="syringe-plunger"></div>
       </div>
-      <div class="result-item">
-        <span class="result-label">Doses per vial</span>
-        <span class="result-value" id="resDoses">— <span class="unit">doses</span></span>
+      <div class="syringe-scale">
+        <span>0</span><span>25</span><span>50</span><span>75</span><span>100</span>
       </div>
-      <div class="result-item">
-        <span class="result-label">Volume per dose</span>
-        <span class="result-value" id="resVol">— <span class="unit">mL</span></span>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat" id="statDoses">
+        <div class="stat-label">Doses</div>
+        <div class="stat-val"><span id="resDoses">40</span><span class="unit-label">per vial</span></div>
+      </div>
+      <div class="stat" id="statVol">
+        <div class="stat-label">Volume</div>
+        <div class="stat-val"><span id="resVol">0.075</span><span class="unit-label">mL/dose</span></div>
+      </div>
+      <div class="stat" id="statConc">
+        <div class="stat-label">Strength</div>
+        <div class="stat-val"><span id="resConc">33.3</span><span class="unit-label">mcg/unit</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- DOSING GUIDE TAB -->
 <div class="tab-content" id="tab-guide">
-  <div class="card">
-    <h2>Dosing Guide</h2>
-    <input type="text" class="search-box" id="pepSearch" placeholder="Search peptides..." />
-    <div id="pepList"></div>
+  <div class="glass">
+    <h2><span class="accent-dot"></span> Dosing Guide</h2>
+    <p>Tap any peptide to expand. Tap "Load" to send numbers to calculator.</p>
+
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" class="search-input" id="pepSearch" placeholder="Search 30+ peptides..." />
+    </div>
+
+    <div class="filter-row" id="filterRow"></div>
+    <div class="pep-list" id="pepList"></div>
   </div>
+</div>
+
 </div>
 
 <footer>
-  PepCalc · Personal reference only · Not medical advice
+  PepCalc · Personal reference · Not medical advice
 </footer>
 
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+  <span id="toastMsg">Loaded into calculator</span>
+</div>
+
 <script>
-// ============ AUTH GATE ============
 const PASSWORD = '1111';
 const gate = document.getElementById('gate');
 const gateInput = document.getElementById('gateInput');
 const gateErr = document.getElementById('gateErr');
 
 function checkAuth() {
-  if (localStorage.getItem('pc_auth') === 'yes') {
-    gate.classList.add('hidden');
-  } else {
-    gateInput.focus();
-  }
+  if (localStorage.getItem('pc_auth') === 'yes') gate.classList.add('hidden');
+  else setTimeout(() => gateInput.focus(), 100);
 }
-
 gateInput.addEventListener('input', (e) => {
   if (e.target.value === PASSWORD) {
     localStorage.setItem('pc_auth', 'yes');
@@ -265,15 +432,9 @@ gateInput.addEventListener('input', (e) => {
     setTimeout(() => { e.target.value = ''; gateErr.textContent = ''; }, 800);
   }
 });
-
-function logout() {
-  localStorage.removeItem('pc_auth');
-  location.reload();
-}
-
+function logout() { localStorage.removeItem('pc_auth'); location.reload(); }
 checkAuth();
 
-// ============ TABS ============
 document.querySelectorAll('.tab').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
@@ -283,15 +444,20 @@ document.querySelectorAll('.tab').forEach(btn => {
   });
 });
 
-// ============ CALCULATOR ============
 let doseUnit = 'mcg';
-
 function setDoseUnit(unit) {
   doseUnit = unit;
-  document.querySelectorAll('.unit-toggle button').forEach(b => {
-    b.classList.toggle('active', b.dataset.unit === unit);
-  });
+  document.querySelectorAll('.unit-toggle button').forEach(b => b.classList.toggle('active', b.dataset.unit === unit));
   calculate();
+}
+
+function fmt(n, dec = 1) {
+  if (!isFinite(n) || isNaN(n)) return '—';
+  if (n >= 1000) return n.toFixed(0);
+  if (n >= 100) return n.toFixed(0);
+  if (n >= 10) return n.toFixed(1);
+  if (n >= 1) return n.toFixed(2);
+  return n.toFixed(3);
 }
 
 function calculate() {
@@ -299,185 +465,215 @@ function calculate() {
   const bacMl = parseFloat(document.getElementById('bacWater').value) || 0;
   const doseRaw = parseFloat(document.getElementById('doseAmount').value) || 0;
   const syrSize = parseFloat(document.getElementById('syringeSize').value) || 1;
-
-  // Convert dose to mcg
   const doseMcg = doseUnit === 'mg' ? doseRaw * 1000 : doseRaw;
 
   if (vialMg <= 0 || bacMl <= 0 || doseMcg <= 0) {
-    document.getElementById('resUnits').innerHTML = '— <span class="unit">units</span>';
-    document.getElementById('resConc').innerHTML = '— <span class="unit">mcg/unit</span>';
-    document.getElementById('resDoses').innerHTML = '— <span class="unit">doses</span>';
-    document.getElementById('resVol').innerHTML = '— <span class="unit">mL</span>';
+    ['bigUnits','resDoses','resVol','resConc','vialPerUnit'].forEach(id => document.getElementById(id).textContent = '—');
+    document.getElementById('vialTotal').textContent = (vialMg || 0) + ' mg';
+    document.getElementById('vialConc').textContent = '— mg/mL';
     document.getElementById('syringeFill').style.width = '0%';
+    document.getElementById('vialLiquid').style.height = '0%';
     return;
   }
 
-  // total mcg in vial
   const totalMcg = vialMg * 1000;
-  // mcg per mL after recon
   const mcgPerMl = totalMcg / bacMl;
-  // mcg per insulin unit (1 unit = 0.01 mL on a 1mL/100u syringe)
-  // For other syringe sizes: 1 unit = syrSize/100 mL
+  const mgPerMl = vialMg / bacMl;
   const mlPerUnit = syrSize / 100;
   const mcgPerUnit = mcgPerMl * mlPerUnit;
-  // units to draw
   const unitsToDraw = doseMcg / mcgPerUnit;
-  // mL per dose
   const mlPerDose = doseMcg / mcgPerMl;
-  // doses per vial
   const dosesPerVial = totalMcg / doseMcg;
 
-  // Format numbers
-  const fmt = (n, dec = 1) => {
-    if (!isFinite(n)) return '—';
-    if (n >= 100) return n.toFixed(0);
-    if (n >= 10) return n.toFixed(1);
-    return n.toFixed(dec);
+  const newVals = {
+    bigUnits: fmt(unitsToDraw, 1),
+    resDoses: fmt(dosesPerVial, 1),
+    resVol: fmt(mlPerDose, 3),
+    resConc: fmt(mcgPerUnit, 2),
+    vialTotal: vialMg + ' mg',
+    vialConc: fmt(mgPerMl, 2) + ' mg/mL',
+    vialPerUnit: fmt(mcgPerUnit, 2) + ' mcg'
   };
 
-  document.getElementById('resUnits').innerHTML = `${fmt(unitsToDraw, 1)} <span class="unit">units</span>`;
-  document.getElementById('resConc').innerHTML = `${fmt(mcgPerUnit, 2)} <span class="unit">mcg/unit</span>`;
-  document.getElementById('resDoses').innerHTML = `${fmt(dosesPerVial, 1)} <span class="unit">doses</span>`;
-  document.getElementById('resVol').innerHTML = `${fmt(mlPerDose, 3)} <span class="unit">mL</span>`;
+  Object.entries(newVals).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && el.textContent !== val) {
+      el.textContent = val;
+      const stat = el.closest('.stat');
+      if (stat) { stat.classList.remove('pulse'); void stat.offsetWidth; stat.classList.add('pulse'); }
+    }
+  });
 
-  // Syringe fill: % of total syringe capacity
   const fillPct = Math.min(100, (unitsToDraw / 100) * 100);
   document.getElementById('syringeFill').style.width = fillPct + '%';
+  const vialFillPct = Math.min(90, (bacMl / 5) * 90);
+  document.getElementById('vialLiquid').style.height = vialFillPct + '%';
 }
 
 ['vialSize', 'bacWater', 'doseAmount', 'syringeSize'].forEach(id => {
-  document.getElementById(id).addEventListener('input', calculate);
+  document.getElementById(id).addEventListener('input', () => {
+    calculate();
+    if (id === 'vialSize' || id === 'bacWater') {
+      const group = id === 'vialSize' ? 'vialPresets' : 'bacPresets';
+      const val = document.getElementById(id).value;
+      document.querySelectorAll(`#${group} .chip`).forEach(c => c.classList.toggle('active', c.dataset.val === val));
+    }
+  });
 });
 
-// Preset buttons
-document.querySelectorAll('#vialPresets .preset-btn').forEach(b => {
+document.querySelectorAll('#vialPresets .chip').forEach(b => {
   b.addEventListener('click', () => {
     document.getElementById('vialSize').value = b.dataset.val;
+    document.querySelectorAll('#vialPresets .chip').forEach(c => c.classList.remove('active'));
+    b.classList.add('active');
     calculate();
   });
 });
-document.querySelectorAll('#bacPresets .preset-btn').forEach(b => {
+document.querySelectorAll('#bacPresets .chip').forEach(b => {
   b.addEventListener('click', () => {
     document.getElementById('bacWater').value = b.dataset.val;
+    document.querySelectorAll('#bacPresets .chip').forEach(c => c.classList.remove('active'));
+    b.classList.add('active');
     calculate();
   });
 });
 
 calculate();
 
-// ============ PEPTIDE GUIDE ============
 const peptides = [
-  // GLP-1 / METABOLIC
-  { name: 'Retatrutide', aliases: 'Reta, LY3437943', cat: 'GLP-1 / Metabolic', tag: 'GLP-1', dose: '0.5–12 mg', startDose: '2 mg', freq: 'Weekly (subcutaneous)', cycle: 'Titrate up over weeks; common: 2 mg wk1-4, 4 mg wk5-8, then up to 8-12 mg', vialCommon: '10 mg or 20 mg', notes: 'Triple agonist (GLP-1/GIP/glucagon). Start LOW and titrate slowly to avoid severe nausea. Most potent of the GLP-1 class. Inject into fat (belly/thigh). Rotate sites.', presetMg: 10, presetBac: 3, presetDose: 2000 },
-  { name: 'Tirzepatide', aliases: 'Tirz, Mounjaro, Zepbound', cat: 'GLP-1 / Metabolic', tag: 'GLP-1', dose: '2.5–15 mg', startDose: '2.5 mg', freq: 'Weekly (subcutaneous)', cycle: 'Titrate: 2.5 mg/wk for 4 weeks → 5 mg → 7.5 → 10 → 12.5 → 15. Increase every 4 weeks.', vialCommon: '10 mg, 15 mg, 30 mg', notes: 'Dual GIP/GLP-1 agonist. Take same day each week. Common side effects: nausea, constipation, fatigue — usually fade after titration phase.', presetMg: 10, presetBac: 2, presetDose: 2500 },
-  { name: 'Semaglutide', aliases: 'Sema, Ozempic, Wegovy', cat: 'GLP-1 / Metabolic', tag: 'GLP-1', dose: '0.25–2.4 mg', startDose: '0.25 mg', freq: 'Weekly (subcutaneous)', cycle: '0.25 mg/wk x4 → 0.5 → 1.0 → 1.7 → 2.4 mg. Increase every 4 weeks.', vialCommon: '2 mg, 5 mg, 10 mg', notes: 'GLP-1 agonist. Slower titration = less nausea. Most users land at 1-2.4 mg/wk for weight management.', presetMg: 5, presetBac: 2, presetDose: 250 },
-  { name: 'Cagrilintide', aliases: 'Cagri', cat: 'GLP-1 / Metabolic', tag: 'Amylin', dose: '0.3–2.4 mg', startDose: '0.3 mg', freq: 'Weekly (subcutaneous)', cycle: 'Titrate weekly similar to semaglutide schedule', vialCommon: '5 mg, 10 mg', notes: 'Long-acting amylin analog. Often stacked with semaglutide ("cagrisema") for synergistic weight loss. Slows gastric emptying.', presetMg: 5, presetBac: 2, presetDose: 300 },
-
-  // GROWTH HORMONE SECRETAGOGUES
-  { name: 'Ipamorelin', aliases: 'Ipa', cat: 'Growth Hormone', tag: 'GHRP', dose: '200–300 mcg', freq: '1-3x daily (subcutaneous)', cycle: '8-12 weeks on, 4 weeks off. Often stacked with CJC-1295.', vialCommon: '5 mg', notes: 'Selective GH releaser with minimal cortisol/prolactin spike. Best taken empty stomach: AM, post-workout, before bed. Stack with CJC-1295 for amplified pulse.', presetMg: 5, presetBac: 2, presetDose: 250 },
-  { name: 'CJC-1295 (no DAC)', aliases: 'Mod GRF 1-29', cat: 'Growth Hormone', tag: 'GHRH', dose: '100–200 mcg', freq: '1-3x daily, often paired with Ipamorelin', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '2 mg, 5 mg', notes: 'GHRH analog without DAC = short half-life, pulsatile release. Pairs synergistically with Ipamorelin (CJC drives the pulse, Ipa amplifies it). "Mod GRF 1-29" is the same compound.', presetMg: 2, presetBac: 2, presetDose: 100 },
-  { name: 'CJC-1295 (with DAC)', aliases: 'CJC-DAC', cat: 'Growth Hormone', tag: 'GHRH', dose: '1-2 mg', freq: 'Weekly (subcutaneous)', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '2 mg, 5 mg', notes: 'DAC = Drug Affinity Complex = long half-life (~8 days). One injection per week gives sustained GH elevation, but loses natural pulsatility. Less popular than no-DAC version.', presetMg: 2, presetBac: 2, presetDose: 1000 },
-  { name: 'Sermorelin', aliases: 'GRF 1-29', cat: 'Growth Hormone', tag: 'GHRH', dose: '200–500 mcg', freq: 'Nightly before bed', cycle: '3-6 months continuous, then assess', vialCommon: '2 mg, 5 mg', notes: 'GHRH analog. Stimulates natural GH from pituitary. Best taken at bedtime to mimic natural GH pulse. Gentler than CJC, slower results.', presetMg: 2, presetBac: 2, presetDose: 300 },
-  { name: 'Tesamorelin', aliases: 'Tesa, Egrifta', cat: 'Growth Hormone', tag: 'GHRH', dose: '1-2 mg', freq: 'Daily (subcutaneous)', cycle: '12-26 weeks for visceral fat reduction', vialCommon: '2 mg, 5 mg', notes: 'Stronger GHRH analog, FDA-approved for HIV-related lipodystrophy. Best known for visceral fat reduction. Inject in belly fat. Can raise IGF-1 significantly.', presetMg: 5, presetBac: 2, presetDose: 1000 },
-  { name: 'MK-677', aliases: 'Ibutamoren', cat: 'Growth Hormone', tag: 'Oral', dose: '10–25 mg', freq: 'Once daily (oral)', cycle: '8-16 weeks on, 4 weeks off', vialCommon: 'Oral capsule/liquid', notes: 'Oral ghrelin mimetic — not injected. Significantly increases appetite, GH, IGF-1. Watch for water retention, insulin resistance with long use. Take at night.', presetMg: 0, presetBac: 0, presetDose: 0 },
-  { name: 'GHRP-2', aliases: '', cat: 'Growth Hormone', tag: 'GHRP', dose: '100–300 mcg', freq: '2-3x daily', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '5 mg', notes: 'Strong GH releaser but raises cortisol and prolactin more than Ipamorelin. Increases appetite noticeably.', presetMg: 5, presetBac: 2, presetDose: 200 },
-  { name: 'GHRP-6', aliases: '', cat: 'Growth Hormone', tag: 'GHRP', dose: '100–300 mcg', freq: '2-3x daily', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '5 mg', notes: 'Older GHRP. Strongest appetite stimulation of the GHRPs (intense hunger ~30min post-inject). Cortisol/prolactin elevation.', presetMg: 5, presetBac: 2, presetDose: 200 },
-  { name: 'Hexarelin', aliases: 'Hex', cat: 'Growth Hormone', tag: 'GHRP', dose: '100–200 mcg', freq: '1-2x daily', cycle: '4-6 weeks max — receptor desensitization', vialCommon: '2 mg, 5 mg', notes: 'Most potent GHRP per mg but heavy desensitization. Short cycles only. May offer cardiac benefits in research.', presetMg: 2, presetBac: 2, presetDose: 150 },
-
-  // HEALING / RECOVERY
-  { name: 'BPC-157', aliases: 'Body Protection Compound', cat: 'Healing / Recovery', tag: 'Heal', dose: '250–500 mcg', freq: '1-2x daily (sub-Q or IM near injury)', cycle: '4-8 weeks; can run longer for chronic issues', vialCommon: '5 mg, 10 mg', notes: 'Most popular healing peptide. Inject near site of injury for tendon/joint, anywhere for gut. Pairs well with TB-500. Generally well-tolerated.', presetMg: 5, presetBac: 2, presetDose: 250 },
-  { name: 'TB-500', aliases: 'Thymosin Beta-4 fragment', cat: 'Healing / Recovery', tag: 'Heal', dose: '2–10 mg total/week', freq: '2-2.5 mg 2-3x/week, or front-loaded', cycle: '4-6 week loading phase, then maintenance', vialCommon: '2 mg, 5 mg, 10 mg', notes: 'Systemic healing — soft tissue, hair, cardiac. Common loading: 5 mg 2x/week for 4 weeks, then 2-5 mg/week maintenance. Pairs with BPC-157 ("Wolverine").', presetMg: 5, presetBac: 2, presetDose: 2500 },
-  { name: 'GHK-Cu', aliases: 'Copper Peptide', cat: 'Healing / Recovery', tag: 'Heal', dose: '1-3 mg subQ; topical also common', freq: 'Daily or EOD', cycle: '4-12 weeks', vialCommon: '50 mg, 100 mg', notes: 'Skin/hair/wound healing. Subcutaneous for systemic effects. Topical (cream/serum) for localized skin or scalp. Avoid injection sites with active acne.', presetMg: 50, presetBac: 5, presetDose: 2000 },
-  { name: 'Wolverine Blend', aliases: 'BPC-157 + TB-500', cat: 'Healing / Recovery', tag: 'Blend', dose: 'Per individual peptide', freq: 'Once daily combined injection', cycle: '4-8 weeks', vialCommon: 'Often pre-blended 5 mg + 5 mg', notes: 'Synergistic healing stack. Sometimes adds GHK-Cu ("Wolverine Stack"). Dose each component at its individual recommended range. Faster results than either alone.', presetMg: 10, presetBac: 3, presetDose: 500 },
-  { name: 'KPV', aliases: '', cat: 'Healing / Recovery', tag: 'Heal', dose: '200–500 mcg', freq: 'Daily', cycle: '4-8 weeks', vialCommon: '5 mg', notes: 'Alpha-MSH fragment. Anti-inflammatory, gut healing, skin conditions. Can be taken orally (poor bioavailability) or injected.', presetMg: 5, presetBac: 2, presetDose: 300 },
-  { name: 'Thymosin Alpha-1', aliases: 'TA-1, Zadaxin', cat: 'Healing / Recovery', tag: 'Immune', dose: '1.6 mg', freq: '2x weekly (subcutaneous)', cycle: '4-12 weeks', vialCommon: '5 mg, 10 mg', notes: 'Immune modulator. Used for chronic infections, immune dysfunction, post-illness recovery. Different from TB-500 (TB-4).', presetMg: 5, presetBac: 2, presetDose: 1600 },
-  { name: 'LL-37', aliases: 'Cathelicidin', cat: 'Healing / Recovery', tag: 'Immune', dose: '100–500 mcg', freq: 'Daily', cycle: '2-4 weeks max', vialCommon: '5 mg', notes: 'Antimicrobial peptide. Used for biofilm/chronic infections. Can cause significant injection site reactions (redness, swelling) — normal but uncomfortable.', presetMg: 5, presetBac: 2, presetDose: 200 },
-
-  // TANNING / MELANOCORTIN
-  { name: 'Melanotan I', aliases: 'MT-1, Afamelanotide', cat: 'Tanning / Melanocortin', tag: 'MC1R', dose: '500 mcg – 1 mg', freq: 'Daily during loading, then 2x/week', cycle: 'Loading phase ~2-4 weeks, maintenance after', vialCommon: '10 mg', notes: 'More selective than MT-2 — less nausea, less sexual side effects, less darkening of moles. Slower tan onset but cleaner profile.', presetMg: 10, presetBac: 3, presetDose: 500 },
-  { name: 'Melanotan II', aliases: 'MT-2', cat: 'Tanning / Melanocortin', tag: 'MC1R', dose: '250–500 mcg', freq: 'Daily during loading, then 2-3x/week', cycle: 'Loading phase ~2-3 weeks (start very low!), maintenance dose after', vialCommon: '10 mg', notes: 'START LOW (100-250 mcg first dose) — nausea is common. UV exposure still required to tan. Side effects: darkening of moles/freckles, spontaneous erections, decreased appetite. Less selective than MT-1.', presetMg: 10, presetBac: 3, presetDose: 250 },
-  { name: 'PT-141', aliases: 'Bremelanotide', cat: 'Tanning / Melanocortin', tag: 'Libido', dose: '0.5–2 mg', freq: 'As needed, 45-min before activity', cycle: 'Not for daily use', vialCommon: '10 mg', notes: 'For libido/arousal — works on brain (MC4R), not hormones. Side effects: nausea, flushing, transient BP increase. Don\'t use with cardiovascular conditions. Start at 0.5 mg.', presetMg: 10, presetBac: 3, presetDose: 1000 },
-
-  // MITOCHONDRIAL / LONGEVITY
-  { name: 'MOTS-c', aliases: '', cat: 'Mitochondrial / Longevity', tag: 'Mito', dose: '5–10 mg', freq: '2-3x/week (subcutaneous)', cycle: '4-8 weeks', vialCommon: '10 mg', notes: 'Mitochondrial-derived peptide. Metabolic/insulin sensitivity, exercise mimetic effects. Some users report improved endurance and recovery.', presetMg: 10, presetBac: 2, presetDose: 5000 },
-  { name: 'SS-31', aliases: 'Elamipretide', cat: 'Mitochondrial / Longevity', tag: 'Mito', dose: '1-5 mg', freq: 'Daily', cycle: '4-8 weeks', vialCommon: '50 mg', notes: 'Targets mitochondrial inner membrane (cardiolipin). Studied for heart failure, mito dysfunction. Pricey.', presetMg: 50, presetBac: 5, presetDose: 3000 },
-  { name: 'Epitalon', aliases: 'Epithalon', cat: 'Mitochondrial / Longevity', tag: 'Longevity', dose: '5–10 mg', freq: 'Daily for 10-20 days', cycle: '10-20 day course, 2x/year typical', vialCommon: '20 mg, 50 mg', notes: 'Telomerase-related research peptide. Short course protocols common (vs. continuous). Sleep improvement often reported anecdotally.', presetMg: 20, presetBac: 2, presetDose: 5000 },
-  { name: '5-Amino-1MQ', aliases: '5A1MQ', cat: 'Mitochondrial / Longevity', tag: 'Oral', dose: '50–150 mg', freq: 'Daily (oral)', cycle: '8-12 weeks', vialCommon: 'Oral capsule', notes: 'Oral NNMT inhibitor — not injected. Targets adipocyte metabolism. Take with food.', presetMg: 0, presetBac: 0, presetDose: 0 },
-
-  // COGNITIVE / NEURO
-  { name: 'Selank', aliases: '', cat: 'Cognitive / Neuro', tag: 'Nootropic', dose: '250–500 mcg', freq: '1-3x daily (intranasal or subQ)', cycle: '2-4 weeks', vialCommon: '5 mg', notes: 'Anxiolytic nootropic from Russia. Calming without sedation. Intranasal use very common (faster onset to brain).', presetMg: 5, presetBac: 2, presetDose: 300 },
-  { name: 'Semax', aliases: '', cat: 'Cognitive / Neuro', tag: 'Nootropic', dose: '250–600 mcg', freq: '1-3x daily (intranasal common)', cycle: '2-4 weeks', vialCommon: '5 mg', notes: 'ACTH fragment, nootropic/neuroprotective. Stimulating — take earlier in day. Intranasal preferred.', presetMg: 5, presetBac: 2, presetDose: 300 },
-  { name: 'Cerebrolysin', aliases: '', cat: 'Cognitive / Neuro', tag: 'Neuro', dose: '5-30 mL (premixed amps)', freq: 'Daily IM injection', cycle: '10-20 day courses', vialCommon: 'Pre-mixed ampoules (not reconstituted)', notes: 'Neurotrophic peptide mix from pig brain. Comes pre-mixed in ampoules — no reconstitution needed. Used post-stroke, TBI, dementia research.', presetMg: 0, presetBac: 0, presetDose: 0 },
-  { name: 'Dihexa', aliases: 'PNB-0408', cat: 'Cognitive / Neuro', tag: 'Nootropic', dose: '8–45 mg', freq: 'Daily (oral)', cycle: '2-4 weeks', vialCommon: 'Oral', notes: 'Potent synaptogenic compound — oral, not injected. Long half-life. Reportedly very strong cognitive effects.', presetMg: 0, presetBac: 0, presetDose: 0 },
-
-  // SLEEP
-  { name: 'DSIP', aliases: 'Delta Sleep-Inducing Peptide', cat: 'Sleep', tag: 'Sleep', dose: '100–300 mcg', freq: 'Before bed', cycle: 'As needed', vialCommon: '5 mg', notes: 'Promotes delta wave (deep) sleep. Mild effects for most users. Some find it more useful as part of a stack.', presetMg: 5, presetBac: 2, presetDose: 200 },
-
-  // OTHER / METABOLIC
-  { name: 'IGF-1 LR3', aliases: '', cat: 'Other', tag: 'Anabolic', dose: '20–50 mcg', freq: '1-2x daily', cycle: '4 weeks max — receptor downregulation', vialCommon: '1 mg', notes: 'Long-acting IGF-1 variant. Powerful anabolic. Run short cycles. Subcutaneous near target muscle some users prefer. Hypoglycemia risk — eat after.', presetMg: 1, presetBac: 1, presetDose: 30 },
-  { name: 'HGH Frag 176-191', aliases: 'AOD frag', cat: 'Other', tag: 'Fat loss', dose: '250–500 mcg', freq: '2-3x daily (empty stomach)', cycle: '4-12 weeks', vialCommon: '2 mg, 5 mg', notes: 'Fragment of GH targeting fat loss without GH side effects (no IGF-1 spike). Modest effects in practice.', presetMg: 5, presetBac: 2, presetDose: 300 },
-  { name: 'AOD-9604', aliases: '', cat: 'Other', tag: 'Fat loss', dose: '250–500 mcg', freq: '1-2x daily', cycle: '8-12 weeks', vialCommon: '2 mg, 5 mg', notes: 'Modified HGH frag, similar concept. Anecdotal results mixed.', presetMg: 5, presetBac: 2, presetDose: 300 },
-  { name: 'Follistatin (FST-344)', aliases: '', cat: 'Other', tag: 'Anabolic', dose: '100 mcg', freq: 'Daily', cycle: '10-30 days', vialCommon: '1 mg', notes: 'Myostatin inhibitor. Expensive. Real follistatin is rare in research market — verify source.', presetMg: 1, presetBac: 1, presetDose: 100 },
-  { name: 'Adipotide', aliases: 'FTPP', cat: 'Other', tag: 'Fat loss', dose: '0.05 mg/kg', freq: 'Daily', cycle: '4 weeks max', vialCommon: '10 mg', notes: 'Targets blood supply to fat cells. Significant kidney toxicity concerns in primate studies. Use with extreme caution.', presetMg: 10, presetBac: 2, presetDose: 4000 }
+  { name: 'Retatrutide', aliases: 'Reta · LY3437943', cat: 'GLP-1 / Metabolic', tag: 'GLP-1', tagClass: 'glp1', dose: '0.5–12 mg', startDose: '2 mg', freq: 'Weekly (subQ)', cycle: '2 mg w1-4 → 4 mg w5-8 → up to 8-12 mg', vialCommon: '10 or 20 mg', notes: 'Triple agonist (GLP-1/GIP/glucagon). Start LOW and titrate slowly to avoid severe nausea. Most potent of the GLP-1 class. Inject into fat (belly/thigh). Rotate sites.', presetMg: 10, presetBac: 3, presetDose: 2000 },
+  { name: 'Tirzepatide', aliases: 'Tirz · Mounjaro · Zepbound', cat: 'GLP-1 / Metabolic', tag: 'GLP-1', tagClass: 'glp1', dose: '2.5–15 mg', startDose: '2.5 mg', freq: 'Weekly (subQ)', cycle: '2.5 → 5 → 7.5 → 10 → 12.5 → 15 (every 4 wks)', vialCommon: '10, 15, 30 mg', notes: 'Dual GIP/GLP-1 agonist. Take same day each week. Side effects: nausea, constipation, fatigue — fade after titration phase.', presetMg: 10, presetBac: 2, presetDose: 2500 },
+  { name: 'Semaglutide', aliases: 'Sema · Ozempic · Wegovy', cat: 'GLP-1 / Metabolic', tag: 'GLP-1', tagClass: 'glp1', dose: '0.25–2.4 mg', startDose: '0.25 mg', freq: 'Weekly (subQ)', cycle: '0.25 → 0.5 → 1.0 → 1.7 → 2.4 mg (every 4 wks)', vialCommon: '2, 5, 10 mg', notes: 'GLP-1 agonist. Slower titration = less nausea. Most users land at 1-2.4 mg/wk for weight management.', presetMg: 5, presetBac: 2, presetDose: 250 },
+  { name: 'Cagrilintide', aliases: 'Cagri', cat: 'GLP-1 / Metabolic', tag: 'Amylin', tagClass: 'amylin', dose: '0.3–2.4 mg', startDose: '0.3 mg', freq: 'Weekly (subQ)', cycle: 'Titrate weekly similar to semaglutide', vialCommon: '5, 10 mg', notes: 'Long-acting amylin analog. Often stacked with semaglutide ("cagrisema") for synergistic weight loss. Slows gastric emptying.', presetMg: 5, presetBac: 2, presetDose: 300 },
+  { name: 'Ipamorelin', aliases: 'Ipa', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '200–300 mcg', freq: '1-3x daily (subQ)', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '5 mg', notes: 'Selective GH releaser with minimal cortisol/prolactin spike. Best on empty stomach: AM, post-workout, before bed. Stack with CJC-1295 for amplified pulse.', presetMg: 5, presetBac: 2, presetDose: 250 },
+  { name: 'CJC-1295 (no DAC)', aliases: 'Mod GRF 1-29', cat: 'Growth Hormone', tag: 'GHRH', tagClass: 'ghrh', dose: '100–200 mcg', freq: '1-3x daily, paired with Ipa', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '2, 5 mg', notes: 'GHRH analog without DAC = short half-life, pulsatile release. Pairs synergistically with Ipamorelin (CJC drives pulse, Ipa amplifies).', presetMg: 2, presetBac: 2, presetDose: 100 },
+  { name: 'CJC-1295 (with DAC)', aliases: 'CJC-DAC', cat: 'Growth Hormone', tag: 'GHRH', tagClass: 'ghrh', dose: '1-2 mg', freq: 'Weekly (subQ)', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '2, 5 mg', notes: 'DAC = long half-life (~8 days). One weekly injection gives sustained GH elevation, but loses natural pulsatility. Less popular than no-DAC version.', presetMg: 2, presetBac: 2, presetDose: 1000 },
+  { name: 'Sermorelin', aliases: 'GRF 1-29', cat: 'Growth Hormone', tag: 'GHRH', tagClass: 'ghrh', dose: '200–500 mcg', freq: 'Nightly before bed', cycle: '3-6 months continuous', vialCommon: '2, 5 mg', notes: 'GHRH analog. Stimulates natural GH from pituitary. Best at bedtime to mimic natural GH pulse. Gentler than CJC, slower results.', presetMg: 2, presetBac: 2, presetDose: 300 },
+  { name: 'Tesamorelin', aliases: 'Tesa · Egrifta', cat: 'Growth Hormone', tag: 'GHRH', tagClass: 'ghrh', dose: '1-2 mg', freq: 'Daily (subQ)', cycle: '12-26 weeks for visceral fat', vialCommon: '2, 5 mg', notes: 'Stronger GHRH analog, FDA-approved for HIV-related lipodystrophy. Best known for visceral fat reduction. Inject in belly fat. Can raise IGF-1 significantly.', presetMg: 5, presetBac: 2, presetDose: 1000 },
+  { name: 'MK-677', aliases: 'Ibutamoren', cat: 'Growth Hormone', tag: 'Oral', tagClass: 'oral', dose: '10–25 mg', freq: 'Once daily (oral)', cycle: '8-16 weeks on, 4 weeks off', vialCommon: 'Capsule / liquid', notes: 'Oral ghrelin mimetic — not injected. Significantly increases appetite, GH, IGF-1. Watch for water retention, insulin resistance with long use. Take at night.', presetMg: 0, presetBac: 0, presetDose: 0 },
+  { name: 'GHRP-2', aliases: '', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '100–300 mcg', freq: '2-3x daily', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '5 mg', notes: 'Strong GH releaser but raises cortisol and prolactin more than Ipamorelin. Increases appetite noticeably.', presetMg: 5, presetBac: 2, presetDose: 200 },
+  { name: 'GHRP-6', aliases: '', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '100–300 mcg', freq: '2-3x daily', cycle: '8-12 weeks on, 4 weeks off', vialCommon: '5 mg', notes: 'Older GHRP. Strongest appetite stimulation of the GHRPs (intense hunger ~30min post-inject). Cortisol/prolactin elevation.', presetMg: 5, presetBac: 2, presetDose: 200 },
+  { name: 'Hexarelin', aliases: 'Hex', cat: 'Growth Hormone', tag: 'GHRP', tagClass: 'ghrp', dose: '100–200 mcg', freq: '1-2x daily', cycle: '4-6 weeks max — desensitization', vialCommon: '2, 5 mg', notes: 'Most potent GHRP per mg but heavy desensitization. Short cycles only. May offer cardiac benefits in research.', presetMg: 2, presetBac: 2, presetDose: 150 },
+  { name: 'BPC-157', aliases: 'Body Protection Compound', cat: 'Healing / Recovery', tag: 'Heal', tagClass: 'heal', dose: '250–500 mcg', freq: '1-2x daily (subQ or IM near injury)', cycle: '4-8 weeks; longer for chronic', vialCommon: '5, 10 mg', notes: 'Most popular healing peptide. Inject near injury site for tendon/joint, anywhere for gut. Pairs well with TB-500. Well-tolerated.', presetMg: 5, presetBac: 2, presetDose: 250 },
+  { name: 'TB-500', aliases: 'Thymosin Beta-4 fragment', cat: 'Healing / Recovery', tag: 'Heal', tagClass: 'heal', dose: '2–10 mg/week', freq: '2-2.5 mg 2-3x/week, or front-loaded', cycle: '4-6 wk loading, then maintenance', vialCommon: '2, 5, 10 mg', notes: 'Systemic healing — soft tissue, hair, cardiac. Common loading: 5 mg 2x/week for 4 weeks, then 2-5 mg/week maintenance. Pairs with BPC-157 ("Wolverine").', presetMg: 5, presetBac: 2, presetDose: 2500 },
+  { name: 'GHK-Cu', aliases: 'Copper Peptide', cat: 'Healing / Recovery', tag: 'Heal', tagClass: 'heal', dose: '1-3 mg subQ; topical also common', freq: 'Daily or EOD', cycle: '4-12 weeks', vialCommon: '50, 100 mg', notes: 'Skin/hair/wound healing. Subcutaneous for systemic effects. Topical (cream/serum) for localized skin or scalp. Avoid injection sites with active acne.', presetMg: 50, presetBac: 5, presetDose: 2000 },
+  { name: 'Wolverine Blend', aliases: 'BPC-157 + TB-500', cat: 'Healing / Recovery', tag: 'Blend', tagClass: 'blend', dose: 'Per individual peptide', freq: 'Once daily combined injection', cycle: '4-8 weeks', vialCommon: 'Often 5 mg + 5 mg pre-blended', notes: 'Synergistic healing stack. Sometimes adds GHK-Cu. Dose each component at its individual range. Faster results than either alone.', presetMg: 10, presetBac: 3, presetDose: 500 },
+  { name: 'KPV', aliases: 'Lys-Pro-Val', cat: 'Healing / Recovery', tag: 'Heal', tagClass: 'heal', dose: '200–500 mcg', freq: 'Daily', cycle: '4-8 weeks', vialCommon: '5 mg', notes: 'Alpha-MSH fragment. Anti-inflammatory, gut healing, skin conditions. Can be taken orally (poor bioavailability) or injected.', presetMg: 5, presetBac: 2, presetDose: 300 },
+  { name: 'Thymosin Alpha-1', aliases: 'TA-1 · Zadaxin', cat: 'Healing / Recovery', tag: 'Immune', tagClass: 'immune', dose: '1.6 mg', freq: '2x weekly (subQ)', cycle: '4-12 weeks', vialCommon: '5, 10 mg', notes: 'Immune modulator. Used for chronic infections, immune dysfunction, post-illness recovery. Different from TB-500 (TB-4).', presetMg: 5, presetBac: 2, presetDose: 1600 },
+  { name: 'LL-37', aliases: 'Cathelicidin', cat: 'Healing / Recovery', tag: 'Immune', tagClass: 'immune', dose: '100–500 mcg', freq: 'Daily', cycle: '2-4 weeks max', vialCommon: '5 mg', notes: 'Antimicrobial peptide. Used for biofilm/chronic infections. Can cause significant injection site reactions (redness, swelling) — normal but uncomfortable.', presetMg: 5, presetBac: 2, presetDose: 200 },
+  { name: 'Melanotan I', aliases: 'MT-1 · Afamelanotide', cat: 'Tanning / Melanocortin', tag: 'MC1R', tagClass: 'mc1r', dose: '500 mcg – 1 mg', freq: 'Daily loading, then 2x/week', cycle: 'Loading ~2-4 wks, then maintenance', vialCommon: '10 mg', notes: 'More selective than MT-2 — less nausea, less sexual side effects, less darkening of moles. Slower tan onset but cleaner profile.', presetMg: 10, presetBac: 3, presetDose: 500 },
+  { name: 'Melanotan II', aliases: 'MT-2', cat: 'Tanning / Melanocortin', tag: 'MC1R', tagClass: 'mc1r', dose: '250–500 mcg', freq: 'Daily loading, then 2-3x/week', cycle: 'Loading ~2-3 wks (start low!), maintenance', vialCommon: '10 mg', notes: 'START LOW (100-250 mcg first dose) — nausea is common. UV exposure still required to tan. Side effects: darkening of moles/freckles, spontaneous erections, decreased appetite. Less selective than MT-1.', presetMg: 10, presetBac: 3, presetDose: 250 },
+  { name: 'PT-141', aliases: 'Bremelanotide', cat: 'Tanning / Melanocortin', tag: 'Libido', tagClass: 'libido', dose: '0.5–2 mg', freq: 'As needed, 45-min before activity', cycle: 'Not for daily use', vialCommon: '10 mg', notes: 'For libido/arousal — works on brain (MC4R), not hormones. Side effects: nausea, flushing, transient BP increase. Avoid with cardiovascular conditions. Start at 0.5 mg.', presetMg: 10, presetBac: 3, presetDose: 1000 },
+  { name: 'MOTS-c', aliases: '', cat: 'Mitochondrial / Longevity', tag: 'Mito', tagClass: 'mito', dose: '5–10 mg', freq: '2-3x/week (subQ)', cycle: '4-8 weeks', vialCommon: '10 mg', notes: 'Mitochondrial-derived peptide. Metabolic/insulin sensitivity, exercise mimetic effects. Some users report improved endurance and recovery.', presetMg: 10, presetBac: 2, presetDose: 5000 },
+  { name: 'SS-31', aliases: 'Elamipretide', cat: 'Mitochondrial / Longevity', tag: 'Mito', tagClass: 'mito', dose: '1-5 mg', freq: 'Daily', cycle: '4-8 weeks', vialCommon: '50 mg', notes: 'Targets mitochondrial inner membrane (cardiolipin). Studied for heart failure, mito dysfunction. Pricey.', presetMg: 50, presetBac: 5, presetDose: 3000 },
+  { name: 'Epitalon', aliases: 'Epithalon', cat: 'Mitochondrial / Longevity', tag: 'Longevity', tagClass: 'longevity', dose: '5–10 mg', freq: 'Daily for 10-20 days', cycle: '10-20 day course, 2x/year typical', vialCommon: '20, 50 mg', notes: 'Telomerase-related research peptide. Short course protocols common (vs. continuous). Sleep improvement often reported anecdotally.', presetMg: 20, presetBac: 2, presetDose: 5000 },
+  { name: '5-Amino-1MQ', aliases: '5A1MQ', cat: 'Mitochondrial / Longevity', tag: 'Oral', tagClass: 'oral', dose: '50–150 mg', freq: 'Daily (oral)', cycle: '8-12 weeks', vialCommon: 'Capsule', notes: 'Oral NNMT inhibitor — not injected. Targets adipocyte metabolism. Take with food.', presetMg: 0, presetBac: 0, presetDose: 0 },
+  { name: 'Selank', aliases: '', cat: 'Cognitive / Neuro', tag: 'Nootropic', tagClass: 'nootropic', dose: '250–500 mcg', freq: '1-3x daily (intranasal or subQ)', cycle: '2-4 weeks', vialCommon: '5 mg', notes: 'Anxiolytic nootropic from Russia. Calming without sedation. Intranasal use very common (faster onset to brain).', presetMg: 5, presetBac: 2, presetDose: 300 },
+  { name: 'Semax', aliases: '', cat: 'Cognitive / Neuro', tag: 'Nootropic', tagClass: 'nootropic', dose: '250–600 mcg', freq: '1-3x daily (intranasal common)', cycle: '2-4 weeks', vialCommon: '5 mg', notes: 'ACTH fragment, nootropic/neuroprotective. Stimulating — take earlier in day. Intranasal preferred.', presetMg: 5, presetBac: 2, presetDose: 300 },
+  { name: 'Cerebrolysin', aliases: '', cat: 'Cognitive / Neuro', tag: 'Neuro', tagClass: 'neuro', dose: '5-30 mL (premixed amps)', freq: 'Daily IM injection', cycle: '10-20 day courses', vialCommon: 'Pre-mixed ampoules', notes: 'Neurotrophic peptide mix from pig brain. Comes pre-mixed in ampoules — no reconstitution needed. Used post-stroke, TBI, dementia research.', presetMg: 0, presetBac: 0, presetDose: 0 },
+  { name: 'Dihexa', aliases: 'PNB-0408', cat: 'Cognitive / Neuro', tag: 'Nootropic', tagClass: 'nootropic', dose: '8–45 mg', freq: 'Daily (oral)', cycle: '2-4 weeks', vialCommon: 'Oral', notes: 'Potent synaptogenic compound — oral, not injected. Long half-life. Reportedly very strong cognitive effects.', presetMg: 0, presetBac: 0, presetDose: 0 },
+  { name: 'DSIP', aliases: 'Delta Sleep-Inducing Peptide', cat: 'Sleep', tag: 'Sleep', tagClass: 'sleep', dose: '100–300 mcg', freq: 'Before bed', cycle: 'As needed', vialCommon: '5 mg', notes: 'Promotes delta wave (deep) sleep. Mild effects for most users. Some find it more useful as part of a stack.', presetMg: 5, presetBac: 2, presetDose: 200 },
+  { name: 'IGF-1 LR3', aliases: '', cat: 'Anabolic / Performance', tag: 'Anabolic', tagClass: 'anabolic', dose: '20–50 mcg', freq: '1-2x daily', cycle: '4 weeks max — receptor downreg', vialCommon: '1 mg', notes: 'Long-acting IGF-1 variant. Powerful anabolic. Run short cycles. Subcutaneous near target muscle. Hypoglycemia risk — eat after.', presetMg: 1, presetBac: 1, presetDose: 30 },
+  { name: 'HGH Frag 176-191', aliases: 'AOD frag', cat: 'Anabolic / Performance', tag: 'Fat', tagClass: 'fat', dose: '250–500 mcg', freq: '2-3x daily (empty stomach)', cycle: '4-12 weeks', vialCommon: '2, 5 mg', notes: 'Fragment of GH targeting fat loss without GH side effects (no IGF-1 spike). Modest effects in practice.', presetMg: 5, presetBac: 2, presetDose: 300 },
+  { name: 'AOD-9604', aliases: '', cat: 'Anabolic / Performance', tag: 'Fat', tagClass: 'fat', dose: '250–500 mcg', freq: '1-2x daily', cycle: '8-12 weeks', vialCommon: '2, 5 mg', notes: 'Modified HGH frag, similar concept. Anecdotal results mixed.', presetMg: 5, presetBac: 2, presetDose: 300 },
+  { name: 'Follistatin (FST-344)', aliases: '', cat: 'Anabolic / Performance', tag: 'Anabolic', tagClass: 'anabolic', dose: '100 mcg', freq: 'Daily', cycle: '10-30 days', vialCommon: '1 mg', notes: 'Myostatin inhibitor. Expensive. Real follistatin is rare in research market — verify source.', presetMg: 1, presetBac: 1, presetDose: 100 },
+  { name: 'Adipotide', aliases: 'FTPP', cat: 'Anabolic / Performance', tag: 'Fat', tagClass: 'fat', dose: '0.05 mg/kg', freq: 'Daily', cycle: '4 weeks max', vialCommon: '10 mg', notes: 'Targets blood supply to fat cells. Significant kidney toxicity concerns in primate studies. Use with extreme caution.', presetMg: 10, presetBac: 2, presetDose: 4000 }
 ];
+
+const categoryIcons = {
+  'GLP-1 / Metabolic': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="pep-cat-icon"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+  'Growth Hormone': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="pep-cat-icon"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  'Healing / Recovery': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="pep-cat-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+  'Tanning / Melanocortin': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="pep-cat-icon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>',
+  'Mitochondrial / Longevity': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="pep-cat-icon"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+  'Cognitive / Neuro': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="pep-cat-icon"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2z"/></svg>',
+  'Sleep': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="pep-cat-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+  'Anabolic / Performance': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="pep-cat-icon"><path d="M6.5 6.5h11l-1 11h-9l-1-11z"/></svg>'
+};
+
+const categories = [...new Set(peptides.map(p => p.cat))];
+let activeFilter = 'all';
+
+function renderFilters() {
+  const row = document.getElementById('filterRow');
+  let html = `<button class="chip ${activeFilter === 'all' ? 'active' : ''}" data-filter="all">All</button>`;
+  categories.forEach(cat => {
+    const short = cat.split(' / ')[0];
+    html += `<button class="chip ${activeFilter === cat ? 'active' : ''}" data-filter="${cat}">${short}</button>`;
+  });
+  row.innerHTML = html;
+  row.querySelectorAll('.chip').forEach(b => {
+    b.addEventListener('click', () => {
+      activeFilter = b.dataset.filter;
+      renderFilters();
+      renderPeptides(document.getElementById('pepSearch').value);
+    });
+  });
+}
 
 function renderPeptides(filter = '') {
   const list = document.getElementById('pepList');
   const f = filter.toLowerCase().trim();
-  const filtered = f
-    ? peptides.filter(p => p.name.toLowerCase().includes(f) || p.aliases.toLowerCase().includes(f) || p.cat.toLowerCase().includes(f))
+  let filtered = f
+    ? peptides.filter(p => p.name.toLowerCase().includes(f) || p.aliases.toLowerCase().includes(f) || p.cat.toLowerCase().includes(f) || p.tag.toLowerCase().includes(f))
     : peptides;
+  if (activeFilter !== 'all') filtered = filtered.filter(p => p.cat === activeFilter);
 
-  // Group by category
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <div>No peptides match.</div>
+    </div>`;
+    return;
+  }
+
   const groups = {};
-  filtered.forEach(p => {
-    if (!groups[p.cat]) groups[p.cat] = [];
-    groups[p.cat].push(p);
-  });
+  filtered.forEach(p => { if (!groups[p.cat]) groups[p.cat] = []; groups[p.cat].push(p); });
 
   let html = '';
   Object.keys(groups).forEach(cat => {
-    html += `<div class="pep-category">${cat}</div>`;
-    groups[cat].forEach((p, i) => {
+    html += `<div class="pep-cat-header">${categoryIcons[cat] || ''}${cat}</div>`;
+    groups[cat].forEach(p => {
       const idx = peptides.indexOf(p);
       html += `
         <div class="pep-card" data-idx="${idx}">
           <div class="pep-card-head">
-            <div>
+            <div class="pep-card-left">
               <div class="pep-name">${p.name}</div>
               ${p.aliases ? `<div class="pep-aliases">${p.aliases}</div>` : ''}
             </div>
-            <div class="pep-tag">${p.tag}</div>
+            <span class="pep-tag ${p.tagClass}">${p.tag}</span>
+            <svg class="pep-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
           <div class="pep-detail">
-            <div class="pep-row"><span class="lbl">Typical dose</span><span class="val">${p.dose}</span></div>
-            ${p.startDose ? `<div class="pep-row"><span class="lbl">Start dose</span><span class="val">${p.startDose}</span></div>` : ''}
-            <div class="pep-row"><span class="lbl">Frequency</span><span class="val">${p.freq}</span></div>
-            <div class="pep-row"><span class="lbl">Cycle</span><span class="val">${p.cycle}</span></div>
-            <div class="pep-row"><span class="lbl">Common vial</span><span class="val">${p.vialCommon}</span></div>
+            <div class="pep-rows">
+              <div class="pep-row"><span class="lbl">Dose</span><span class="val">${p.dose}</span></div>
+              ${p.startDose ? `<div class="pep-row"><span class="lbl">Start</span><span class="val">${p.startDose}</span></div>` : ''}
+              <div class="pep-row"><span class="lbl">Frequency</span><span class="val">${p.freq}</span></div>
+              <div class="pep-row"><span class="lbl">Cycle</span><span class="val">${p.cycle}</span></div>
+              <div class="pep-row"><span class="lbl">Vial size</span><span class="val">${p.vialCommon}</span></div>
+            </div>
             <div class="pep-notes">${p.notes}</div>
-            ${p.presetMg > 0 ? `<button class="pep-use-btn" data-idx="${idx}">Load into calculator →</button>` : ''}
+            ${p.presetMg > 0
+              ? `<button class="pep-load-btn" data-idx="${idx}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 12 5 19 12"/><polyline points="5 19 12 12 19 19"/></svg>
+                  Load into calculator
+                </button>`
+              : `<button class="pep-load-btn disabled" disabled>Not injected — no calc presets</button>`}
           </div>
         </div>`;
     });
   });
-
-  if (filtered.length === 0) {
-    html = '<div style="color: var(--text-mute); padding: 2rem; text-align: center;">No peptides match that search.</div>';
-  }
-
   list.innerHTML = html;
 
-  // Click to expand
   list.querySelectorAll('.pep-card').forEach(card => {
     card.addEventListener('click', (e) => {
-      if (e.target.classList.contains('pep-use-btn')) return;
+      if (e.target.closest('.pep-load-btn')) return;
       card.classList.toggle('expanded');
     });
   });
 
-  // Use in calculator
-  list.querySelectorAll('.pep-use-btn').forEach(btn => {
+  list.querySelectorAll('.pep-load-btn:not(.disabled)').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const idx = parseInt(btn.dataset.idx);
@@ -486,17 +682,28 @@ function renderPeptides(filter = '') {
       document.getElementById('bacWater').value = p.presetBac;
       document.getElementById('doseAmount').value = p.presetDose;
       setDoseUnit('mcg');
+      document.querySelectorAll('#vialPresets .chip').forEach(c => c.classList.toggle('active', parseFloat(c.dataset.val) === p.presetMg));
+      document.querySelectorAll('#bacPresets .chip').forEach(c => c.classList.toggle('active', parseFloat(c.dataset.val) === p.presetBac));
       calculate();
-      // Switch to calc tab
       document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.querySelector('[data-tab="calc"]').classList.add('active');
       document.getElementById('tab-calc').classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast(`${p.name} loaded`);
     });
   });
 }
 
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+renderFilters();
 renderPeptides();
 document.getElementById('pepSearch').addEventListener('input', (e) => renderPeptides(e.target.value));
 </script>
